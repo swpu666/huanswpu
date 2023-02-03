@@ -43,7 +43,8 @@ public class CommonController {
         File dir = new File(basePath);//创建一个目录对象
         //判断当前目录是否存在
         if(!dir.exists()){//如果上面配置的目录basePath不存在，需要创建
-            dir.mkdirs();}
+            dir.mkdirs();
+        }
 
         try {//将临时文件转存(transferTo())到指定位置
             file.transferTo(new File(basePath + fileName));

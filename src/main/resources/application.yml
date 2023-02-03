@@ -14,7 +14,8 @@ spring:
     port: 6379
     password: 123456
     database: 0
-#  redis:
+# 本地redis服务
+# redis:
 #    host: 127.0.0.1
 #    port: 6379
 #    password:
