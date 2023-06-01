@@ -1,11 +1,23 @@
 package com.itheima.reggie.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.reggie.common.R;
+import com.itheima.reggie.dto.DishDto;
+import com.itheima.reggie.entity.Dish;
 import com.itheima.reggie.entity.Orders;
 import com.itheima.reggie.service.OrderService;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 订单
@@ -28,6 +40,41 @@ public class OrderController {
         log.info("订单数据：{}",orders);
         orderService.submit(orders);
         return R.success("下单成功");
+    }
+    /**
+     * 订单信息分页查询
+     * @param page=1&pageSize=10&number=1664134&beginTime=2023-06-06 00:00:00&endTime=2023-07-12 23:59:59
+     * @return
+     */
+    @GetMapping("/page")
+    public R<Page> page(int page, int pageSize, String number, String beginTime,String endTime){
+
+//        log.info("page数据 {}，{}",page,pageSize);
+        // 1.具有转换功能的对象
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+//3.LocalDate发动，将字符串转换成 df格式的LocalDateTime对象，的功能
+//        LocalDateTime bTime = LocalDateTime.parse(beginTime,df);
+//        LocalDateTime eTime = LocalDateTime.parse(beginTime,df);
+//        System.out.println("String类型的时间转成LocalDateTime："+bTime);
+        //构造分页构造器对象
+        Page<Orders> pageInfo = new Page<>(page,pageSize);
+
+        //条件构造器
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        //添加排序条件
+        queryWrapper.orderByDesc(Orders::getId);
+        //添加过滤条件
+        queryWrapper.like(number != null,Orders::getNumber,number);
+//        queryWrapper.gt(beginTime != null,Orders::getOrderTime,LocalDateTime.parse(beginTime,df));
+//        queryWrapper.lt(endTime != null,Orders::getOrderTime,LocalDateTime.parse(endTime,df));
+        queryWrapper.gt(beginTime != null,Orders::getOrderTime,beginTime);
+        queryWrapper.lt(endTime != null,Orders::getOrderTime,endTime);
+
+        //执行分页查询
+        orderService.page(pageInfo,queryWrapper);
+
+        return R.success(pageInfo);
     }
 
 }

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 订单
+ * 订单 （不体现买了哪些菜品、套餐啥的）
  */
 @Data
 public class Orders implements Serializable {
