@@ -30,6 +30,7 @@ public class AddressBookController {
      */
     @PostMapping
     public R<AddressBook> save(@RequestBody AddressBook addressBook) {
+        //获得userid
         addressBook.setUserId(BaseContext.getCurrentId());
         log.info("addressBook:{}", addressBook);
         addressBookService.save(addressBook);
@@ -44,6 +45,7 @@ public class AddressBookController {
         log.info("addressBook:{}", addressBook);
         LambdaUpdateWrapper<AddressBook> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
+        //把所有"是否是默认地址"字段 改成0
         wrapper.set(AddressBook::getIsDefault, 0);
         //SQL:update address_book set is_default = 0 where user_id = ?
         addressBookService.update(wrapper);
