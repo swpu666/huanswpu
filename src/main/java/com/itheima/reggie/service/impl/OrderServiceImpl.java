@@ -36,7 +36,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     private OrderDetailService orderDetailService;
 
     /**
-     * 用户下单
+     * 用户下单 不用购物车数据是因为 直接从userid查shopcart表的数据
      * @param orders
      */
     @Transactional
@@ -63,11 +63,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             throw new CustomException("用户地址信息有误，不能下单");
         }
 
-        long orderId = IdWorker.getId();//订单号
+        long orderId = IdWorker.getId();//自动生成订单号
 
+        //计算总金额
         AtomicInteger amount = new AtomicInteger(0);
 
-        List<OrderDetail> orderDetails = shoppingCarts.stream().map((item) -> {
+        //Stream流 遍历购物车
+        List<OrderDetail> orderDetails = shoppingCarts.
+                stream().map((item) -> {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(orderId);
             orderDetail.setNumber(item.getNumber());
@@ -77,20 +80,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             orderDetail.setName(item.getName());
             orderDetail.setImage(item.getImage());
             orderDetail.setAmount(item.getAmount());
+            //累加金额
             amount.addAndGet(item.getAmount().multiply(new BigDecimal(item.getNumber())).intValue());
             return orderDetail;
         }).collect(Collectors.toList());
 
-
+        //set  订单数据
         orders.setId(orderId);
         orders.setOrderTime(LocalDateTime.now());
-        orders.setCheckoutTime(LocalDateTime.now());
-        orders.setStatus(2);
+        orders.setCheckoutTime(LocalDateTime.now());//结账时间
+        orders.setStatus(2);//派送状态
         orders.setAmount(new BigDecimal(amount.get()));//总金额
         orders.setUserId(userId);
         orders.setNumber(String.valueOf(orderId));
         orders.setUserName(user.getName());
-        orders.setConsignee(addressBook.getConsignee());
+        orders.setConsignee(addressBook.getConsignee());//收货人
         orders.setPhone(addressBook.getPhone());
         orders.setAddress((addressBook.getProvinceName() == null ? "" : addressBook.getProvinceName())
                 + (addressBook.getCityName() == null ? "" : addressBook.getCityName())

@@ -11,10 +11,10 @@ import com.itheima.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +24,10 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
 
     @Autowired
     private DishFlavorService dishFlavorService;
+    @Autowired
+    private DishService dishService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品，同时保存对应的口味数据
@@ -88,5 +92,29 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         }).collect(Collectors.toList());
 
         dishFlavorService.saveBatch(flavors);
+    }
+
+    @Override
+    @Transactional
+    public void updateWithStatus(Integer status, List<String> ids){
+
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper();
+        // 等价于 字段 IN (v0, v1, ...),例: in("age",{1,2,3}) ---> age in (1,2,3)
+        queryWrapper.in(ids!=null,Dish::getId,ids);//构造条件
+
+
+        List<Dish> dishs = dishService.list(queryWrapper);
+        //修改当前菜品对应 status
+        for (Dish dish:dishs) {
+            if(dish!=null) {
+                dish.setStatus(status);
+
+                //2.精确 清理缓存数据(只清理 被更新类别 的缓存数据)
+                String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
+                redisTemplate.delete(key);
+
+                dishService.updateById(dish);
+            }
+        }
     }
 }

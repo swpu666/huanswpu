@@ -24,7 +24,7 @@ public class ShoppingCartController {
     private ShoppingCartService shoppingCartService;
 
     /**
-     * 添加购物车
+     * 添加购物车  他是在 下单逻辑结束才清空 购物车
      * @param shoppingCart
      * @return
      */
@@ -36,10 +36,13 @@ public class ShoppingCartController {
         Long currentId = BaseContext.getCurrentId();
         shoppingCart.setUserId(currentId);
 
+        //通过 shoppingCart 参数里面 有没有DishId 判断 下单的是套餐还是菜品
         Long dishId = shoppingCart.getDishId();
 
+        //添加 userid查询 条件
         LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ShoppingCart::getUserId,currentId);
+
 
         if(dishId != null){
             //添加到购物车的是菜品

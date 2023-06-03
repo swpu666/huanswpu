@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.reggie.common.CustomException;
 import com.itheima.reggie.dto.SetmealDto;
+import com.itheima.reggie.entity.Dish;
 import com.itheima.reggie.entity.Setmeal;
 import com.itheima.reggie.entity.SetmealDish;
 import com.itheima.reggie.mapper.SetmealMapper;
@@ -11,6 +12,7 @@ import com.itheima.reggie.service.SetmealDishService;
 import com.itheima.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,10 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper,Setmeal> imple
 
     @Autowired
     private SetmealDishService setmealDishService;
+    @Autowired
+    private SetmealService setmealService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增套餐，同时需要保存套餐和菜品的关联关系
@@ -68,5 +74,27 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper,Setmeal> imple
         lambdaQueryWrapper.in(SetmealDish::getSetmealId,ids);
         //删除关系表中的数据----setmeal_dish
         setmealDishService.remove(lambdaQueryWrapper);
+    }
+
+    @Override
+    @Transactional
+    public void updateWithStatus(Integer status, List<String> ids){
+
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.in(ids!=null,Setmeal::getId,ids);//构造条件
+
+
+        List<Setmeal> list = setmealService.list(queryWrapper);
+        //修改当前菜品对应 status
+        for (Setmeal setmeal:list) {
+            if(setmeal!=null) {
+                setmeal.setStatus(status);
+
+                //2.精确 清理缓存数据(只清理 被更新类别 的缓存数据)
+                String key = "dish_" + setmeal.getCategoryId() + "_" + setmeal.getStatus();
+                redisTemplate.delete(key);
+                setmealService.updateById(setmeal);
+            }
+        }
     }
 }

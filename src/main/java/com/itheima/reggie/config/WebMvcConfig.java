@@ -32,9 +32,10 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         log.info("开始进行静态资源映射...");//前后台静态资源放行
-        // 系统自动帮忙生成这doc.html页面用于展示我们的接口信息，我们需要将他们放行
+        // 框架自动帮忙生成这doc.html 页面用于展示我们的接口信息，我们需要将他们放行
         registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+
 
         //registry.addResourceHandle("想放行的静态资源").addResourceLocations("要映射到的位置(即静态资源到这个位置)");
         registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
@@ -58,7 +59,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public Docket createRestApi() {
-        // 文档类型
+        // Swagger定义的文档类型
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
@@ -68,6 +69,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .build();
     }
 
+    //封装 apiInfo
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("瑞吉外卖")

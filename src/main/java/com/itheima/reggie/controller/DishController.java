@@ -214,4 +214,21 @@ public class DishController {
         return R.success(dishDtoList);
     }
 
+    /**
+     * 停/起 售菜品
+     * @param "8080/dish/status/0?ids=1413385247889891330,1397862198033297410,1397861683434139649"
+     * @return
+     */
+
+    @PostMapping("/status/{status}")
+    public R<String> updateStatus(@PathVariable Integer status,@RequestParam List<String> ids){
+//        log.info(ids);
+
+        dishService.updateWithStatus(status,ids);
+
+        return R.success("修改菜品状态成功");
+    }
+
+
+
 }

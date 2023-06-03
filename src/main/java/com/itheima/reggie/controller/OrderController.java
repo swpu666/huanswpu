@@ -2,10 +2,14 @@ package com.itheima.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.itheima.reggie.common.BaseContext;
 import com.itheima.reggie.common.R;
 import com.itheima.reggie.dto.DishDto;
 import com.itheima.reggie.entity.Dish;
+import com.itheima.reggie.entity.OrderDetail;
 import com.itheima.reggie.entity.Orders;
+import com.itheima.reggie.entity.ShoppingCart;
+import com.itheima.reggie.service.OrderDetailService;
 import com.itheima.reggie.service.OrderService;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +34,12 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private OrderDetailService orderDetailService;
+
     /**
      * 用户下单
-     * @param orders
+     * @param orders 不用购物车数据是因为 直接从userid查shopcart表的数据
      * @return
      */
     @PostMapping("/submit")
@@ -63,13 +70,40 @@ public class OrderController {
         //条件构造器
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
         //添加排序条件
-        queryWrapper.orderByDesc(Orders::getId);
+        queryWrapper.orderByDesc(Orders::getOrderTime);
         //添加过滤条件
         queryWrapper.like(number != null,Orders::getNumber,number);
 //        queryWrapper.gt(beginTime != null,Orders::getOrderTime,LocalDateTime.parse(beginTime,df));
 //        queryWrapper.lt(endTime != null,Orders::getOrderTime,LocalDateTime.parse(endTime,df));
         queryWrapper.gt(beginTime != null,Orders::getOrderTime,beginTime);
         queryWrapper.lt(endTime != null,Orders::getOrderTime,endTime);
+
+        //执行分页查询
+        orderService.page(pageInfo,queryWrapper);
+
+        return R.success(pageInfo);
+    }
+
+    /**
+     * 订单信息分页查询
+     * @param ://localhost:8080/order/userPage?page=1&pageSize=5
+     * @return
+     */
+    @GetMapping("/userPage")
+    public R<Page> userPage(int page,int pageSize){
+
+//        log.info("page数据 {}，{}",page,pageSize);
+        //设置用户id，指定当前是哪个用户的订单数据
+        Long currentId = BaseContext.getCurrentId();
+        //构造分页构造器对象
+        Page<Orders> pageInfo = new Page<>(page,pageSize);
+
+        //条件构造器
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        //添加排序条件
+        queryWrapper.orderByDesc(Orders::getOrderTime);
+        //添加过滤条件
+        queryWrapper.eq(Orders::getUserId,currentId);
 
         //执行分页查询
         orderService.page(pageInfo,queryWrapper);
