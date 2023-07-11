@@ -10,8 +10,8 @@
         <version>2.4.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.itheima</groupId>
-    <artifactId>reggie_take_out</artifactId>
+    <groupId>com.itswpu</groupId>
+    <artifactId>huanswpu</artifactId>
     <version>1.0-SNAPSHOT</version>
     <dependencies>
         <!--阿里云短信服务-->
@@ -87,6 +87,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- 数字验证码 -->
+        <dependency>
+            <groupId>pro.fessional</groupId>
+            <artifactId>kaptcha</artifactId>
+            <version>2.3.3</version>
         </dependency>
 <!--   数据库主从分离maven-->
 <!--        <dependency>-->
