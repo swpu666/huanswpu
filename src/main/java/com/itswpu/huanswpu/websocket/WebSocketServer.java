@@ -16,7 +16,7 @@ import java.util.Map;
  * WebSocket服务
  */
 @Component
-@ServerEndpoint("/ws/{sid}")
+@ServerEndpoint("/ws/{sid}")//路径匹配
 public class WebSocketServer {
 
     //存放会话对象
@@ -25,7 +25,7 @@ public class WebSocketServer {
     /**
      * 连接建立成功调用的方法
      */
-    @OnOpen
+    @OnOpen//通过PathParam确定连接哪个 客户端
     public void onOpen(Session session, @PathParam("sid") String sid) {
         System.out.println("客户端：" + sid + "建立连接");
         sessionMap.put(sid, session);

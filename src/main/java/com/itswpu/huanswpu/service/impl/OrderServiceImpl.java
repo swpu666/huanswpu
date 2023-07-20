@@ -1,5 +1,6 @@
 package com.itswpu.huanswpu.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +10,7 @@ import com.itswpu.huanswpu.common.CustomException;
 import com.itswpu.huanswpu.entity.*;
 import com.itswpu.huanswpu.mapper.OrderMapper;
 import com.itswpu.huanswpu.service.*;
+import com.itswpu.huanswpu.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -36,6 +40,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     @Autowired
     private OrderDetailService orderDetailService;
 
+    @Autowired
+    private WebSocketServer webSocketServer;
     /**
      * 用户下单 不用购物车数据是因为 直接从userid查shopcart表的数据
      * @param orders
@@ -107,6 +113,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //向订单明细表插入数据，多条数据
         orderDetailService.saveBatch(orderDetails);
 
+        //通过websocket向客户端浏览器推送消息 type orderId content
+        Map map = new HashMap();
+        map.put("type",1); // 1表示来单提醒 2表示客户催单
+        map.put("orderId",orders.getId());
+        map.put("content","订单号：" + orderId);
+
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
+        log.info("向客户端浏览器推送消息"+json);
         //清空购物车数据
         shoppingCartService.remove(wrapper);
     }
