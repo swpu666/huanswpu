@@ -1,5 +1,5 @@
 server:
-  port: 8080 #启动时候的端口号
+  port: 8021 #启动时候的端口号
 spring:
   application:
     name: reggie_take_out    #应用的名称，可选
