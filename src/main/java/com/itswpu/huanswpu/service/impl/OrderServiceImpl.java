@@ -99,6 +99,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         orders.setStatus(2);//派送状态
         orders.setAmount(new BigDecimal(amount.get()));//总金额
         orders.setUserId(userId);
+        orders.setUserId(null);//刚下单，无人接单
         orders.setNumber(String.valueOf(orderId));
         orders.setUserName(user.getName());
         orders.setConsignee(addressBook.getConsignee());//收货人
@@ -124,5 +125,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         log.info("向客户端浏览器推送消息"+json);
         //清空购物车数据
         shoppingCartService.remove(wrapper);
+    }
+
+    /**
+     * 骑手接单
+     * @param orders
+     */
+    @Transactional
+    public void receive(Orders orders) {
+        //获得当前用户id
+        Long deliveryId = BaseContext.getCurrentId();
+
+        //查询用户数据
+        User user = userService.getById(deliveryId);
+
+        //查询地址数据
+        Long addressBookId = orders.getAddressBookId();
+        AddressBook addressBook = addressBookService.getById(addressBookId);
+        if(addressBook == null){
+            throw new CustomException("用户地址信息有误，不能接单");
+        }
+
+        //set  订单数据
+        orders.setStatus(3);//已派送状态
+        orders.setUserId(deliveryId);//接单
+        //向订单表更新数据
+        this.updateById(orders);
+
+        log.info("骑手"+deliveryId+"接单"+orders);
     }
 }

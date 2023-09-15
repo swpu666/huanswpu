@@ -39,6 +39,18 @@ public class OrderController {
         return R.success("下单成功");
     }
     /**
+     * 骑手接单
+     * @param orders
+     * @return
+     */
+    @PostMapping("/receive")
+    public R<String> receive(@RequestBody Orders orders){
+        log.info("订单数据：{}",orders);
+        orderService.receive(orders);
+        return R.success("接单成功");
+    }
+
+    /**
      * 订单信息分页查询
      * @param page=1&pageSize=10&number=1664134&beginTime=2023-06-06 00:00:00&endTime=2023-07-12 23:59:59
      * @return

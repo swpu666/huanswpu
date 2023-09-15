@@ -11,4 +11,10 @@ public interface OrderService extends IService<Orders> {
      */
     public void submit(Orders orders);
 
+    /**
+     * 骑手接单
+     * @param orders
+     */
+    public void receive(Orders orders);
+
 }

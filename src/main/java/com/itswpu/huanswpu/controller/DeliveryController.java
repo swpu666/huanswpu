@@ -19,9 +19,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/delivery")
 @Slf4j
-public class UserController {
+public class DeliveryController {
 
     @Autowired
     private UserService userService;

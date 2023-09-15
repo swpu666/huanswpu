@@ -43,6 +43,9 @@ public class Orders implements Serializable {
     //下单用户id
     private Long userId;
 
+    //接单骑手id
+    private Long deliveryId;
+
     //地址id
     private Long addressBookId;
 

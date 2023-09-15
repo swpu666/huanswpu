@@ -37,6 +37,8 @@ public class LoginCheckFilter implements Filter{
                 "/common/**",//上传文件等的控制层资源
                 "/user/sendMsg", //移动端发送短信
                 "/user/login",  //移动端登录
+//                "/delivery/sendMsg", //移动端发送短信
+//                "/delivery/login",  //移动端登录
                 //下面这四个是 Swagger生成的接口文档 放行
                 "/doc.html",
                 "/webjars/**",
@@ -73,6 +75,16 @@ public class LoginCheckFilter implements Filter{
         }
 
         log.info("用户未登录");
+//        //4-3、判断 骑手 登录状态，如果已登录，则直接放行
+//        if(request.getSession().getAttribute("delivery") != null){
+//            log.info("骑手已登录，骑手id为：{}",request.getSession().getAttribute("delivery"));
+//            Long deliveryId = (Long) request.getSession().getAttribute("delivery");
+//            BaseContext.setCurrentId(deliveryId);//获得ID给元数据处理器用
+//            filterChain.doFilter(request,response);
+//            return;
+//        }
+//
+//        log.info("骑手未登录");
         //5、如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
         //把R转成JSON 输出’NOTLOGIN‘和request.js里面响应拦截器的条件匹配
