@@ -22,7 +22,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     /**
-     * 员工登录
+     * 商家登录
      * @param request
      * @param employee
      * @return
@@ -50,36 +50,36 @@ public class EmployeeController {
             return R.error("账号或密码输入错误，登录失败");
         }
 
-        //5、查看员工状态，如果为已禁用状态，则返回员工已禁用结果
+        //5、查看商家状态，如果为已禁用状态，则返回商家已禁用结果
         if(emp.getStatus() == 0){
             return R.error("账号已禁用");
         }
 
-        //6、登录成功，将员工id存入Session并返回登录成功结果
+        //6、登录成功，将商家id存入Session并返回登录成功结果
         request.getSession().setAttribute("employee",emp.getId());
         return R.success(emp);
     }
 
     /**
-     * 员工退出
+     * 商家退出
      * @param request
      * @return
      */
     @PostMapping("/logout")
     public R<String> logout(HttpServletRequest request){
-        //清理Session中保存的当前登录员工的id
+        //清理Session中保存的当前登录商家的id
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
     }
 
     /**
-     * 新增员工
+     * 新增商家
      * @param employee
      * @return
      */
     @PostMapping
     public R<String> save(HttpServletRequest request,@RequestBody Employee employee){
-        log.info("新增员工，员工信息：{}",employee.toString());
+        log.info("新增商家，商家信息：{}",employee.toString());
         //设置初始密码123456，需要进行md5加密处理
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
@@ -93,10 +93,10 @@ public class EmployeeController {
 
         employeeService.save(employee);
         //继承了MabatisPlus的IService接口写的save
-        return R.success("新增员工成功");
+        return R.success("新增商家成功");
     }
     /**
-     * 员工信息分页查询
+     * 商家信息分页查询
      * @param page
      * @param pageSize
      * @param name
@@ -122,7 +122,7 @@ public class EmployeeController {
     }
 
     /**
-     * 根据id修改员工信息
+     * 根据id修改商家信息
      * @param employee
      * @return
      */
@@ -137,21 +137,36 @@ public class EmployeeController {
         //employee.setUpdateUser(empId);
         employeeService.updateById(employee);
 
-        return R.success("员工信息修改成功");
+        return R.success("商家信息修改成功");
     }
 
     /**
-     * 根据id查询员工信息
+     * 根据id查询商家信息
      * @param id
      * @return
      */
     @GetMapping("/{id}")
     public R<Employee> getById(@PathVariable Long id){
-        log.info("根据id查询员工信息...");
+        log.info("根据id查询商家信息...");
         Employee employee = employeeService.getById(id);
         if(employee != null){
             return R.success(employee);
         }
-        return R.error("没有查询到对应员工信息");
+        return R.error("没有查询到对应商家信息");
     }
+
+    /**
+     * 商家申请入驻
+     * @param id
+     * @return
+     */
+//    @GetMapping("/{enter}")
+//    public R<Employee> enter(@PathVariable Long id){
+//        log.info("根据id查询商家信息...");
+//        Employee employee = employeeService.getById(id);
+//        if(employee != null){
+//            return R.success(employee);
+//        }
+//        return R.error("没有查询到对应商家信息");
+//    }
 }

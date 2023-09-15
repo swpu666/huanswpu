@@ -18,10 +18,8 @@ public class DishFlavor implements Serializable {
 
     private Long id;
 
-
     //菜品id
     private Long dishId;
-
 
     //口味名称
     private String name;
@@ -45,7 +43,6 @@ public class DishFlavor implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
-
 
     //是否删除
     private Integer isDeleted;
