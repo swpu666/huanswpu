@@ -72,13 +72,13 @@ div:focus {
   padding: 20px;
 }
 .continue {
-  border-color: #333333 !important;
-  background: #333333 !important;
+  border-color:  #1a71ff !important;
+  background:  #1a71ff !important;
   color: #ffffff !important;
 }
 .continue:hover {
-  background-color: #999999 !important;
-  border-color: #999999 !important;
+  background-color: rgba(26, 113, 255, 0.8) !important;
+  border-color: rgba(26, 113, 255, 0.8)!important;
   color: #ffffff !important;
 }
 .continue:active {
@@ -137,35 +137,35 @@ input[type="number"] {
 }
 @font-face {
   font-family: "DIN-Medium";
-  src: url("../../front/fonts/DIN-Medium.otf");
+  src: url("../../../../../../../huanswpu/huanswpu/src/main/resources/front/fonts/DIN-Medium.otf");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "DIN";
-  src: url("../../front/fonts/DIN-Bold.otf");
+  src: url("../../../../../../../huanswpu/huanswpu/src/main/resources/front/fonts/DIN-Bold.otf");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "PingFangSC-Medium";
-  src: url("../../front/fonts/PingFangSC-Medium.ttf");
+  src: url("../../../../../../../huanswpu/huanswpu/src/main/resources/front/fonts/PingFangSC-Medium.ttf");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "PingFangSC-Regular";
-  src: url("../../front/fonts/PingFangSC-Regular.ttf");
+  src: url("../../../../../../../huanswpu/huanswpu/src/main/resources/front/fonts/PingFangSC-Regular.ttf");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "PingFangSC-Semibold";
-  src: url("../../front/fonts/PingFangSC-Semibold.ttf");
+  src: url("../../../../../../../huanswpu/huanswpu/src/main/resources/front/fonts/PingFangSC-Semibold.ttf");
   font-weight: normal;
   font-style: normal;
 }
@@ -2873,8 +2873,8 @@ input[type="number"] {
   margin-right: 3px;
 }
 .el-table-column--selection .cell {
-  padding-left: 14px;
-  padding-right: 14px;
+  padding-left: 10px;
+  padding-right: 5px;
 }
 .el-table-filter {
   border: 1px solid #ebeef5;

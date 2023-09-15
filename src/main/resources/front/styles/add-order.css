@@ -2,7 +2,7 @@
   width: 100%;
   height: 88rem;
   opacity: 1;
-  background: #333333;
+  background: #177cb0;
   position: relative;
 }
 
@@ -252,11 +252,11 @@
 }
 
 #add_order .divCart .imgCartActive {
-  background-image: url("./../images/cart_active.png");
+  background-image: url("../images/cart_active.png");
 }
 
 #add_order .divCart .imgCart {
-  background-image: url("./../images/cart.png");
+  background-image: url("../images/cart.png");
 }
 
 #add_order .divCart > div:first-child {
@@ -304,8 +304,8 @@
   background: #d8d8d8;
 }
 #add_order .divCart .btnSubmitActive {
-  color: #333333;
-  background: #ffc200;
+  color: white;
+  background: #177cb0;
 }
 
 #add_order .divCart .divGoodsNum {

@@ -196,6 +196,7 @@
   line-height: 100px;
   padding: 12px 5px; */
   padding: 46px 37px 67px 36px;
+  padding-bottom: 20px;
 }
 
 .img {
@@ -255,7 +256,7 @@
 }
 
 .el-menu .el-menu-item.is-active {
-  background-color: #ffc200 !important;
+  background-color: #ffc200 ;
   color: #333333 !important;
   border-radius: 0 21px 21px 0 !important;
 }

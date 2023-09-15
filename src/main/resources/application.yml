@@ -1,14 +1,14 @@
 server:
-  port: 8021 #启动时候的端口号
+  port: 8081 #启动时候的端口号
 spring:
   application:
     name: reggie_take_out    #应用的名称，可选
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://123.60.24.27:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
-      password: 888888
+      password: 123456
 #  shardingsphere:
 #    datasource:
 #      names:
@@ -48,9 +48,9 @@ spring:
 #    database: 0
 
   redis: # 本地redis服务
-    host: 123.60.24.27
+    host: 127.0.0.1
     port: 6379
-    password: 888888
+    password:
     database: 0
   cache:
     redis:
