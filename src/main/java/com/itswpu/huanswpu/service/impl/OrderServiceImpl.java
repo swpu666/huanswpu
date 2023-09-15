@@ -42,6 +42,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     @Autowired
     private WebSocketServer webSocketServer;
+    @Autowired
+    private OrderService orderService;
     /**
      * 用户下单 不用购物车数据是因为 直接从userid查shopcart表的数据
      * @param orders
@@ -154,4 +156,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
         log.info("骑手"+deliveryId+"接单"+orders);
     }
+
+    @Override
+    public void delete(Orders orders) {
+        //获得当前用户id
+        Long deliveryId = BaseContext.getCurrentId();
+
+        if(orders.getDeliveryId()==null){
+            //set  订单数据
+            orders.setStatus(5);//取消状态
+
+            //向订单表更新数据
+            this.updateById(orders);
+
+            log.info("取消订单编号:"+deliveryId);
+        }
+        else{
+            throw new CustomException("骑手已接单，无法取消订单");
+        }
+
+    }
+
+
 }
