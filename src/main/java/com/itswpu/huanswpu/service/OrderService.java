@@ -17,4 +17,6 @@ public interface OrderService extends IService<Orders> {
      */
     public void receive(Orders orders);
 
+
+    void delete(Orders orders);
 }
