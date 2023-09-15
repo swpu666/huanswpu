@@ -116,7 +116,7 @@ public class OrderController {
     public R<String> cancel(@RequestBody Orders orders){
         orderService.delete(orders);
         log.info("订单数据：{}",orders);
-        return R.success("删除成功");
+        return R.success("取消成功");
     }
 
 
