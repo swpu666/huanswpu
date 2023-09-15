@@ -112,7 +112,7 @@ public class OrderController {
 
         return R.success(pageInfo);
     }
-    @DeleteMapping("/cancel")
+    @PutMapping("/cancel")
     public R<String> cancel(@RequestBody Orders orders){
         orderService.delete(orders);
         log.info("订单数据：{}",orders);
