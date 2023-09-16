@@ -1,6 +1,7 @@
 package com.itswpu.huanswpu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
@@ -44,8 +45,7 @@ public class CategoryController {
                         .name(category.getName())
                         .build();
 
-        boolean save = categoryEmployeeService.save(categoryEmployee);
-        System.out.println(save);
+        categoryEmployeeService.save(categoryEmployee);
 
         return R.success("新增分类成功");
     }
@@ -61,12 +61,15 @@ public class CategoryController {
         //分页构造器
         Page<Category> pageInfo = new Page<>(page,pageSize);
         //获取id列表
-        LambdaQueryWrapper<CategoryEmployee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CategoryEmployee::getEmployeeId, BaseContext.getCurrentId());
-        List<CategoryEmployee> list = categoryEmployeeService.list(queryWrapper);
+        LambdaQueryWrapper<CategoryEmployee> qw = new LambdaQueryWrapper<>();
+        qw.eq(CategoryEmployee::getEmployeeId, BaseContext.getCurrentId());
+        List<CategoryEmployee> list = categoryEmployeeService.list(qw);
         ArrayList<Long> ids = new ArrayList<>();
         for (CategoryEmployee categoryEmployee : list) {
             ids.add(categoryEmployee.getCategoryId());
+        }
+        if(!CollectionUtils.isNotEmpty(ids)){
+            return R.success(null);
         }
         //条件构造器
         LambdaQueryWrapper<Category> queryWrapperCategory = new LambdaQueryWrapper<>();
@@ -129,6 +132,10 @@ public class CategoryController {
         ArrayList<Long> ids = new ArrayList<>();
         for (CategoryEmployee categoryEmployee : list) {
             ids.add(categoryEmployee.getCategoryId());
+        }
+
+        if(!CollectionUtils.isNotEmpty(ids)){
+            return R.success(null);
         }
 
         //条件构造器
