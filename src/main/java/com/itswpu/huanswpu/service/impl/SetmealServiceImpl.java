@@ -37,13 +37,13 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper,Setmeal> imple
     public void saveWithDish(SetmealDto setmealDto) {
         //保存套餐的基本信息，操作setmeal，执行insert操作
         this.save(setmealDto);
-
+//        System.out.println(setmealDto.toString()+"////");
         List<SetmealDish> setmealDishes = setmealDto.getSetmealDishes();
         setmealDishes.stream().map((item) -> {
             item.setSetmealId(setmealDto.getId());
             return item;
         }).collect(Collectors.toList());
-
+        System.out.println(setmealDto.toString()+"//////");
         //保存套餐和菜品的关联信息，操作setmeal_dish,执行insert操作
         setmealDishService.saveBatch(setmealDishes);
     }

@@ -1,6 +1,7 @@
 package com.itswpu.huanswpu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
@@ -61,17 +62,22 @@ public class SetmealController {
     @CacheEvict(value = "setmealCache",allEntries = true )
     public R<String> save(@RequestBody SetmealDto setmealDto){
         log.info("套餐信息：{}",setmealDto);
+
+        //保存 菜品套餐关联 信息
+        setmealService.saveWithDish(setmealDto);
+
         //复制类属性 到关联表
         {
             SetmealEmployee se = new SetmealEmployee();
             Long currentId = BaseContext.getCurrentId();
             se.setEmployeeId(currentId);
+            se.setSetmealId(setmealDto.getSetmealDishes().get(0).getSetmealId());
             se.setIsDeleted(0);
-            BeanUtils.copyProperties(se, setmealDto);
+            se.setName(setmealDto.getName());
+            System.out.println(setmealDto.toString()+" **"+se.toString());
             setmealEmployeeMapper.insert(se);
         }
 
-        setmealService.saveWithDish(setmealDto);
 
         return R.success("新增套餐成功");
     }
@@ -99,9 +105,9 @@ public class SetmealController {
             List<SetmealEmployee> seList = setmealEmployeeMapper.selectList(queryWrapperNew);
             List<Long> seListIds=new ArrayList<Long>();
             for (SetmealEmployee se:seList) {
-                seListIds.add( se.getId() );
+                seListIds.add( se.getSetmealId() );
             }
-            if(seListIds == null){
+            if(!CollectionUtils.isNotEmpty(seListIds)){
                 return R.success(null);
             }
             log.info("********关联表数据"+seListIds);
@@ -112,7 +118,7 @@ public class SetmealController {
 
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         //添加查询条件，根据name进行like模糊查询
-            queryWrapper.in(seListIds != null,Setmeal::getId,seListIds);
+            queryWrapper.in(CollectionUtils.isNotEmpty(seListIds),Setmeal::getId,seListIds);
 
         queryWrapper.like(name != null,Setmeal::getName,name);
         //添加排序条件，根据更新时间降序排列
@@ -141,6 +147,7 @@ public class SetmealController {
         }).collect(Collectors.toList());
 
         dtoPage.setRecords(list);
+
         return R.success(dtoPage);
     }
 
@@ -183,13 +190,13 @@ public class SetmealController {
                 seListIds.add( se.getId() );
             }
             log.info("********关联表数据"+seListIds);
-            if(seListIds == null){
+            if(!CollectionUtils.isNotEmpty(seListIds)){
                 return R.success(null);
             }
 
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         //getCategoryId() != null 满足条件才查
-            queryWrapper.in(Setmeal::getId,seListIds);
+            queryWrapper.in(CollectionUtils.isNotEmpty(seListIds),Setmeal::getId,seListIds);
         queryWrapper.eq(setmeal.getCategoryId() != null,
                 Setmeal::getCategoryId,setmeal.getCategoryId());
         queryWrapper.eq(setmeal.getStatus() != null,
