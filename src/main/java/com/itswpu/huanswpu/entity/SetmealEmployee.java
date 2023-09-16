@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class SetmealEmployee {
     private static final long serialVersionUID = 1L;
 
+
     private Long id;
 
     private int isDeleted;
