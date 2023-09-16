@@ -74,7 +74,6 @@ public class SetmealController {
             se.setSetmealId(setmealDto.getSetmealDishes().get(0).getSetmealId());
             se.setIsDeleted(0);
             se.setName(setmealDto.getName());
-//            BeanUtils.copyProperties(se, setmealDto);//勾八方法没用
             System.out.println(setmealDto.toString()+" **"+se.toString());
             setmealEmployeeMapper.insert(se);
         }

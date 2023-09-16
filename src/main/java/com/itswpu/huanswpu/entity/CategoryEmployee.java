@@ -2,16 +2,17 @@ package com.itswpu.huanswpu.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+@Builder
 @Data
 public class CategoryEmployee {
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
-    private int isDeleted;
     private Long categoryId;
 
     private Long employeeId;
