@@ -41,6 +41,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
         //classpath 代表resources
         registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
+        registry.addResourceHandler("/delivery/**").addResourceLocations("classpath:/delivery/");
     }
     /**
      * 扩展mvc框架的消息转换器

@@ -1,4 +1,4 @@
-//提交订单
+0//提交订单
 function  addOrderApi(data){
     return $axios({
         'url': '/order/submit',
