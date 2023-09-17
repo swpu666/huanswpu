@@ -82,25 +82,24 @@ public class DishController {
         Page<Dish> pageInfo = new Page<>(page,pageSize);
         Page<DishDto> dishDtoPage = new Page<>();
 
-            //获取商家关联菜品id列表
-            LambdaQueryWrapper<DishEmployee> qw = new LambdaQueryWrapper<>();
-            qw.eq(DishEmployee::getEmployeeId, BaseContext.getCurrentId());
-            List<DishEmployee> lists = dishEmployeeService.list(qw);
+        //获取商家关联菜品id列表
+        LambdaQueryWrapper<DishEmployee> qw = new LambdaQueryWrapper<>();
+        qw.eq(DishEmployee::getEmployeeId, BaseContext.getCurrentId());
+        List<DishEmployee> lists = dishEmployeeService.list(qw);
 
 
-            ArrayList<Long> ids = new ArrayList<>();
-            for (DishEmployee dishEmployee : lists) {
-                ids.add(dishEmployee.getDishId());
-            }
-            if(!CollectionUtils.isNotEmpty(ids)){
-                log.info("数据库中未查到相关数据");
-                return R.success(dishDtoPage.setTotal(0) );
-            }
 
+        ArrayList<Long> ids = new ArrayList<>();
+        for (DishEmployee dishEmployee : lists) {
+            ids.add(dishEmployee.getDishId());
+        }
+        if(!CollectionUtils.isNotEmpty(ids)){
+            return R.success(dishDtoPage.setTotal(0));
+        }
         //条件构造器
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         //添加过滤条件
-        queryWrapper.in(CollectionUtils.isNotEmpty(ids),Dish::getId,ids);
+        queryWrapper.in(Dish::getId,ids);
         queryWrapper.like(name != null,Dish::getName,name);
         //添加排序条件
         queryWrapper.orderByDesc(Dish::getUpdateTime);
