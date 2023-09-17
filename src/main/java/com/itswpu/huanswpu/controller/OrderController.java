@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
-import com.itswpu.huanswpu.entity.DishEmployee;
-import com.itswpu.huanswpu.entity.Orders;
-import com.itswpu.huanswpu.entity.OrdersEmployee;
+import com.itswpu.huanswpu.dto.OrderReceiveDto;
+import com.itswpu.huanswpu.entity.*;
 import com.itswpu.huanswpu.mapper.OrdersEmployeeMapper;
+import com.itswpu.huanswpu.service.AddressBookService;
 import com.itswpu.huanswpu.service.OrderDetailService;
 import com.itswpu.huanswpu.service.OrderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/order")
+@Api("订单接口")
 public class OrderController {
 
     @Autowired
@@ -32,6 +36,8 @@ public class OrderController {
 
     @Autowired
     private OrderDetailService orderDetailService;
+
+    @Autowired AddressBookService addressBookService;
 
     /**
      * 用户下单
@@ -143,5 +149,53 @@ public class OrderController {
         return R.success("取消成功");
     }
 
+    /**
+     * 查询未接单订单
+     * @return
+     */
+    @ApiOperation("查询未接单订单")
+    @GetMapping("/receive")
+    public R<List<OrderReceiveDto>> receive(){
+        List<OrderReceiveDto> orderReceiveDtos = new ArrayList<>();
+        //条件构造器
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        //添加排序条件
+        queryWrapper.orderByDesc(Orders::getOrderTime);
+        //添加过滤条件
+        queryWrapper.eq(Orders::getStatus,Orders.TO_BE_CONFIRMED);
+
+        List<Orders> list = orderService.list(queryWrapper);
+        for (int i = 0; i < list.size(); i++) {
+            Orders orders = list.get(i);
+            OrderReceiveDto orderReceiveDto = OrderReceiveDto.builder()
+                    .userAddress(addressBookService.getById(orders.getAddressBookId()).getDetail())
+                    .employeeAddress(orders.getAddress())
+                    .amount(orders.getAmount())
+                    .userName(orders.getUserName())
+                    .orderTime(orders.getOrderTime())
+                    .orderId(orders.getId())
+                    .build();
+            BeanUtils.copyProperties(list.get(i),orderReceiveDto);
+            orderReceiveDtos.add(orderReceiveDto);
+        }
+        return R.success(orderReceiveDtos);
+    }
+
+    /**
+     * 确认订单
+     * @param id
+     * @return
+     */
+    @ApiOperation("接单详细")
+    @GetMapping("/receive/{id}")
+    public R<List<OrderDetail>> receiveConfirm(@PathVariable Long id){
+        //条件构造器
+        LambdaQueryWrapper<OrderDetail> queryWrapper = new LambdaQueryWrapper<>();
+        //添加过滤条件
+        queryWrapper.eq(OrderDetail::getOrderId,id);
+
+        List<OrderDetail> list = orderDetailService.list(queryWrapper);
+        return R.success(list);
+    }
 
 }

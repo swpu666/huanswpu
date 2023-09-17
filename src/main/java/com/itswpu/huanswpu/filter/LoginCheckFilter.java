@@ -44,7 +44,8 @@ public class LoginCheckFilter implements Filter{
                 "/webjars/**",
                 "/swagger-resources",
                 "/v2/api-docs",
-                "/delivery/**"
+                "/delivery/**",
+                "/order/**"
 
         };
         //2、判断本次请求是否需要处理
@@ -57,36 +58,36 @@ public class LoginCheckFilter implements Filter{
             return;
         }
         //4-1、需要处理，判断 员工 登录状态，如果已登录，则直接放行filterChain.doFilter
-        if(request.getSession().getAttribute("employee") != null){
-            log.info("员工已登录，员工id为：{}",request.getSession().getAttribute("employee"));
-            Long empId = (Long) request.getSession().getAttribute("employee");
-            BaseContext.setCurrentId(empId);
-
-            filterChain.doFilter(request,response);
-            return;
-        }
-
-        //4-2、判断 用户 登录状态，如果已登录，则直接放行
-        if(request.getSession().getAttribute("user") != null){
-            log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("user"));
-            Long userId = (Long) request.getSession().getAttribute("user");
-            BaseContext.setCurrentId(userId);//获得ID给元数据处理器用
-            filterChain.doFilter(request,response);
-            return;
-        }
-        //4-3、判断 骑手 登录状态，如果已登录，则直接放行
-        if(request.getSession().getAttribute("delivery") != null){
-            log.info("骑手已登录，骑手id为：{}",request.getSession().getAttribute("delivery"));
-            Long deliveryId = (Long) request.getSession().getAttribute("delivery");
-            BaseContext.setCurrentId(deliveryId);//获得ID给元数据处理器用
-            filterChain.doFilter(request,response);
-            return;
-        }
-        else {log.info("骑手未登录");}
-        //5、如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
-        response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
-        //把R转成JSON 输出’NOTLOGIN‘和request.js里面响应拦截器的条件匹配
-        return;
+//        if(request.getSession().getAttribute("employee") != null){
+//            log.info("员工已登录，员工id为：{}",request.getSession().getAttribute("employee"));
+//            Long empId = (Long) request.getSession().getAttribute("employee");
+//            BaseContext.setCurrentId(empId);
+//
+//            filterChain.doFilter(request,response);
+//            return;
+//        }
+//
+//        //4-2、判断 用户 登录状态，如果已登录，则直接放行
+//        if(request.getSession().getAttribute("user") != null){
+//            log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("user"));
+//            Long userId = (Long) request.getSession().getAttribute("user");
+//            BaseContext.setCurrentId(userId);//获得ID给元数据处理器用
+//            filterChain.doFilter(request,response);
+//            return;
+//        }
+//        //4-3、判断 骑手 登录状态，如果已登录，则直接放行
+//        if(request.getSession().getAttribute("delivery") != null){
+//            log.info("骑手已登录，骑手id为：{}",request.getSession().getAttribute("delivery"));
+//            Long deliveryId = (Long) request.getSession().getAttribute("delivery");
+//            BaseContext.setCurrentId(deliveryId);//获得ID给元数据处理器用
+//            filterChain.doFilter(request,response);
+//            return;
+//        }
+//        else {log.info("骑手未登录");}
+//        //5、如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
+//        response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
+//        //把R转成JSON 输出’NOTLOGIN‘和request.js里面响应拦截器的条件匹配
+//        return;
     }
 
     /**
