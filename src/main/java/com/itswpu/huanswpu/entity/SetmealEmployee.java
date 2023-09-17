@@ -13,7 +13,6 @@ public class SetmealEmployee {
 
     private Long id;
 
-    private int isDeleted;
     private Long setmealId;
 
     private Long employeeId;

@@ -72,7 +72,6 @@ public class SetmealController {
             Long currentId = BaseContext.getCurrentId();
             se.setEmployeeId(currentId);
             se.setSetmealId(setmealDto.getSetmealDishes().get(0).getSetmealId());
-            se.setIsDeleted(0);
             se.setName(setmealDto.getName());
             System.out.println(setmealDto.toString()+" **"+se.toString());
             setmealEmployeeMapper.insert(se);

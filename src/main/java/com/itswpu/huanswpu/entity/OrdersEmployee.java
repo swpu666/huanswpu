@@ -12,12 +12,10 @@ public class OrdersEmployee {
 
     private Long id;
 
-    private int isDeleted;
     private Long orderId;
 
     private Long employeeId;
-    //分类名称
-    private String name;
+
 
     //创建时间
     @TableField(fill = FieldFill.INSERT)

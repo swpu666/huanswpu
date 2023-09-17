@@ -2,13 +2,16 @@ package com.itswpu.huanswpu.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.CustomException;
 
 import com.itswpu.huanswpu.entity.*;
+import com.itswpu.huanswpu.mapper.DishEmployeeMapper;
 import com.itswpu.huanswpu.mapper.OrderMapper;
+import com.itswpu.huanswpu.mapper.OrdersEmployeeMapper;
 import com.itswpu.huanswpu.service.*;
 import com.itswpu.huanswpu.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +45,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     @Autowired
     private WebSocketServer webSocketServer;
+
     @Autowired
-    private OrderService orderService;
+    private OrdersEmployeeMapper ordersEmployeeMapper;
+
+    @Autowired
+    private DishEmployeeMapper dishEmployeeMapper;
     /**
      * 用户下单 不用购物车数据是因为 直接从userid查shopcart表的数据
      * @param orders
@@ -112,6 +119,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                 + (addressBook.getDetail() == null ? "" : addressBook.getDetail()));
         //向订单表插入数据，一条数据
         this.save(orders);
+
+            //向关联表添加数据
+            {
+            OrdersEmployee oe = new OrdersEmployee();
+            oe.setOrderId(orderId);
+            LambdaQueryWrapper<DishEmployee> qw = new LambdaQueryWrapper<>();
+            qw.eq(DishEmployee::getDishId,
+                    shoppingCarts.get(0).getDishId());
+            DishEmployee de = dishEmployeeMapper.selectOne(qw);
+            oe.setEmployeeId(de.getEmployeeId());
+            ordersEmployeeMapper.insert(oe);
+            log.info("下单添加订单 商家关联信息" + oe.toString());
+            }
 
         //向订单明细表插入数据，多条数据
         orderDetailService.saveBatch(orderDetails);

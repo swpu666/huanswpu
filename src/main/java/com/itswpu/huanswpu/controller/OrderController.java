@@ -1,10 +1,14 @@
 package com.itswpu.huanswpu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
+import com.itswpu.huanswpu.entity.DishEmployee;
 import com.itswpu.huanswpu.entity.Orders;
+import com.itswpu.huanswpu.entity.OrdersEmployee;
+import com.itswpu.huanswpu.mapper.OrdersEmployeeMapper;
 import com.itswpu.huanswpu.service.OrderDetailService;
 import com.itswpu.huanswpu.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 订单
@@ -50,6 +56,9 @@ public class OrderController {
         return R.success("接单成功");
     }
 
+    @Autowired
+    private OrdersEmployeeMapper ordersEmployeeMapper;
+
     /**
      * 订单信息分页查询
      * @param page=1&pageSize=10&number=1664134&beginTime=2023-06-06 00:00:00&endTime=2023-07-12 23:59:59
@@ -68,6 +77,21 @@ public class OrderController {
 //        System.out.println("String类型的时间转成LocalDateTime："+bTime);
         //构造分页构造器对象
         Page<Orders> pageInfo = new Page<>(page,pageSize);
+
+            //获取商家关联菜品id列表
+            LambdaQueryWrapper<OrdersEmployee> qw = new LambdaQueryWrapper<>();
+            qw.eq(OrdersEmployee::getEmployeeId, BaseContext.getCurrentId());
+            List<OrdersEmployee> lists = ordersEmployeeMapper.selectList(qw);
+
+
+            ArrayList<Long> ids = new ArrayList<>();
+            for (OrdersEmployee oe : lists) {
+                ids.add(oe.getOrderId());
+            }
+            if(!CollectionUtils.isNotEmpty(ids)){
+                log.info("数据库中未查到相关数据");
+                return R.success(pageInfo.setTotal(0) );
+            }
 
         //条件构造器
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
