@@ -69,7 +69,8 @@ public class CategoryController {
             ids.add(categoryEmployee.getCategoryId());
         }
         if(!CollectionUtils.isNotEmpty(ids)){
-            return R.success(null);
+            log.info("数据库中未查到相关数据");
+            return R.success(pageInfo.setTotal(0) );
         }
         //条件构造器
         LambdaQueryWrapper<Category> queryWrapperCategory = new LambdaQueryWrapper<>();

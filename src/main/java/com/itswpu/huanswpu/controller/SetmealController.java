@@ -97,6 +97,11 @@ public class SetmealController {
     })
     @GetMapping("/page")
     public R<Page> page(int page,int pageSize,String name){
+
+        //分页构造器对象
+        Page<Setmeal> pageInfo = new Page<>(page,pageSize);
+        Page<SetmealDto> dtoPage = new Page<>();
+
         //从 关联表 查 套餐id
             Long currentId = BaseContext.getCurrentId();
             LambdaQueryWrapper<SetmealEmployee> queryWrapperNew = new LambdaQueryWrapper<>();
@@ -108,13 +113,11 @@ public class SetmealController {
                 seListIds.add( se.getSetmealId() );
             }
             if(!CollectionUtils.isNotEmpty(seListIds)){
-                return R.success(null);
+                log.info("数据库中未查到相关数据");
+                return R.success(dtoPage.setTotal(0) );
             }
-            log.info("********关联表数据"+seListIds);
+            log.info("关联表数据"+seListIds);
 
-        //分页构造器对象
-        Page<Setmeal> pageInfo = new Page<>(page,pageSize);
-        Page<SetmealDto> dtoPage = new Page<>();
 
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         //添加查询条件，根据name进行like模糊查询
