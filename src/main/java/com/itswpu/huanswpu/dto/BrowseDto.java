@@ -17,5 +17,8 @@ public class BrowseDto {
     //商家名称
     private String name;
 
+    //商家id
+    private Long id;
+
 
 }

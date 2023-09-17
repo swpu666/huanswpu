@@ -201,6 +201,7 @@ public class EmployeeController {
             BrowseDto bd = new BrowseDto();
             bd.setAvatar(e.getAvatar());
             bd.setName(e.getName());
+            bd.setId(e.getId());
             bdlist.add(bd);
         }
         log.info("用户端浏览数据"+bdlist.toString());

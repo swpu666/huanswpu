@@ -7,6 +7,7 @@ import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
 import com.itswpu.huanswpu.entity.Category;
 import com.itswpu.huanswpu.entity.CategoryEmployee;
+import com.itswpu.huanswpu.entity.Employee;
 import com.itswpu.huanswpu.service.CategoryEmployeeService;
 import com.itswpu.huanswpu.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -121,14 +122,14 @@ public class CategoryController {
 
     /**
      * 根据条件查询分类数据
-     * @param category
+     * @param employeeId
      * @return
      */
     @GetMapping("/list")
-    public R<List<Category>> list(Category category){
+    public R<List<Category>> list( Long employeeId){
         //获取id列表
         LambdaQueryWrapper<CategoryEmployee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CategoryEmployee::getEmployeeId, BaseContext.getCurrentId());
+        queryWrapper.eq(CategoryEmployee::getEmployeeId, employeeId);
         List<CategoryEmployee> list = categoryEmployeeService.list(queryWrapper);
         ArrayList<Long> ids = new ArrayList<>();
         for (CategoryEmployee categoryEmployee : list) {
@@ -142,8 +143,8 @@ public class CategoryController {
         //条件构造器
         LambdaQueryWrapper<Category> qw = new LambdaQueryWrapper<>();
         //添加条件
-        qw.eq(category.getType() != null,Category::getType,category.getType());
-        qw.in(Category::getId,ids);
+//        qw.eq(category.getType() != null,Category::getType,category.getType());
+        qw.in(CollectionUtils.isNotEmpty(ids) , Category::getId , ids);
         //添加排序条件
         qw.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
 
