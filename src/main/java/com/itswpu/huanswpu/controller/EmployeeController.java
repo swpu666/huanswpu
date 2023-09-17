@@ -1,17 +1,27 @@
 package com.itswpu.huanswpu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
+import com.itswpu.huanswpu.dto.BrowseDto;
 import com.itswpu.huanswpu.entity.Employee;
+import com.itswpu.huanswpu.entity.Setmeal;
+import com.itswpu.huanswpu.entity.SetmealEmployee;
+import com.itswpu.huanswpu.mapper.EmployeeMapper;
 import com.itswpu.huanswpu.service.EmployeeService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j//日志注解
 @RestController
@@ -169,4 +179,32 @@ public class EmployeeController {
 //        }
 //        return R.error("没有查询到对应商家信息");
 //    }
+
+    /**
+     * 用户浏览商家接口
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "用户浏览商家接口")
+    public R<List<BrowseDto>> list(){
+        LambdaQueryWrapper<Employee> queryWrapperNew = new LambdaQueryWrapper<>();
+        //getCategoryId() != null 满足条件才查
+        queryWrapperNew.notIn(Employee::getId,1L);
+
+        List<BrowseDto> bdlist = new ArrayList<>();
+        List<Employee> eList = employeeService.list(queryWrapperNew);
+        if(!CollectionUtils.isNotEmpty(eList)){
+            return R.success(bdlist);
+        }
+
+        for ( Employee e :eList) {
+            BrowseDto bd = new BrowseDto();
+            bd.setAvatar(e.getAvatar());
+            bd.setName(e.getName());
+            bdlist.add(bd);
+        }
+        log.info("用户端浏览数据"+bdlist.toString());
+
+        return R.success(bdlist);
+    }
 }
