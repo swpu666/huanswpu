@@ -60,3 +60,20 @@ function validID (rule,value,callback) {
     callback(new Error('身份证号码不正确'))
   }
 }
+
+function checkAddress (rule,value,callback) {
+
+  if(value == '') {
+    callback(new Error('请输入地址'))
+  } else {
+    callback()
+  }
+}
+function checkAvatar (fileList,callback) {
+
+  if(fileList.length() == 0) {
+    callback(new Error('请上传图片'))
+  } else {
+    callback()
+  }
+}

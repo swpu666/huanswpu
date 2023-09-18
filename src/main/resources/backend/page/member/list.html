@@ -22,7 +22,7 @@
       <div class="tableBar">
         <el-input
           v-model="input"
-          placeholder="请输入员工姓名"
+          placeholder="请输入商家名称"
           style="width: 250px"
           clearable
            @keyup.enter.native="handleQuery"
@@ -38,7 +38,7 @@
           type="primary"
           @click="addMemberHandle('add')"
         >
-          + 添加员工
+          + 添加商家
         </el-button>
       </div>
       <el-table
@@ -48,7 +48,7 @@
       >
         <el-table-column
           prop="name"
-          label="员工姓名"
+          label="商家姓名"
         ></el-table-column>
         <el-table-column
           prop="username"

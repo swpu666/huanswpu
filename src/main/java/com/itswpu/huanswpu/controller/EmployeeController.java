@@ -196,7 +196,6 @@ public class EmployeeController {
         if(!CollectionUtils.isNotEmpty(eList)){
             return R.success(bdlist);
         }
-
         for ( Employee e :eList) {
             BrowseDto bd = new BrowseDto();
             bd.setAvatar(e.getAvatar());
@@ -205,7 +204,6 @@ public class EmployeeController {
             bdlist.add(bd);
         }
         log.info("用户端浏览数据"+bdlist.toString());
-
         return R.success(bdlist);
     }
 }

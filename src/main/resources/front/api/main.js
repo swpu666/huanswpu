@@ -5,7 +5,6 @@ function categoryListApi() {
       'method': 'get',
     })
   }
-
 //获取菜品分类对应的菜品
 function dishListApi(data) {
     return $axios({

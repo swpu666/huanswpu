@@ -83,6 +83,7 @@
   float: right;
   display: flex;
   margin-right: 34px;
+  width: 150px;
   height: 100%;
   line-height: 64px;
   color: #333333;

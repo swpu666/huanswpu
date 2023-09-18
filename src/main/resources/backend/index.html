@@ -86,9 +86,11 @@
               <span>{{headTitle}}</span>
             </div>
             <div class="right-menu">
-              <div class="avatar-wrapper">{{ userInfo.name }}</div>  <!--在右上角动态显示当前用户name'-->
               <!-- <div class="logout" @click="logout">退出</div> -->
               <img src="images/icons/btn_close@2x.png" class="outLogin" alt="退出" @click="logout" />
+              <el-avatar :size="25" :src="userInfo.avatar" style="margin-top: 20px;margin-right: 10px;margin-left: 20px"></el-avatar>
+              <div class="avatar-wrapper">{{ userInfo.name }}</div>  <!--在右上角动态显示当前用户name'-->
+
             </div>
           </div>
           <div class="app-main" v-loading="loading">
@@ -133,7 +135,7 @@
               //   children: [
                   {
                     id: '2',
-                    name: '员工管理',
+                    name: '商家管理',
                     url: 'page/member/list.html',
                     icon: 'icon-member'
                   },

@@ -15,7 +15,7 @@ function enableOrDisableEmployee (params) {
   })
 }
 
-// 新增---添加员工
+// 新增---添加商家
 function addEmployee (params) {
   return $axios({
     url: '/employee',
