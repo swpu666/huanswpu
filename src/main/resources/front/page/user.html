@@ -67,6 +67,16 @@
             <div class="quitLogin" @click="toPageLogin">
                 退出登录
             </div>
+            <el-footer class="el-footer" style="border-top:gray solid 1px;bottom: 20px;width: 100%;position: absolute;">
+                <div @click="toIndexPage"  style="cursor: pointer; margin-left: 50px; display: inline-block;text-align: center;">
+                  <img src="../../delivery/images/_订单.png" style="user-select: none;width:30px ;height: 30px;" alt="">
+                  <p style="margin-top: 5px; font-size: 16px;user-select: none; font-family: '宋体';">我要接单</p>
+                </div>
+                <div style="cursor: pointer; margin-top: 15px; margin-left: 100px; display: inline-block;text-align: center;">
+                  <img src="../../delivery/images/用户.png" style="user-select: none;width:30px ;height: 30px;" alt="">
+                  <p style="color: rgb(0, 145, 255);margin-top: 5px; user-select: none;font-size: 16px; font-family: '宋体';">个人中心</p>
+                </div>
+              </el-footer>
         </div>
     </div>
     <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -117,6 +127,10 @@
                 toAddressPage(){
                     window.requestAnimationFrame(()=>{
                         window.location.href = '/front/page/address.html'
+                    })  
+                }, toIndexPage(){
+                    window.requestAnimationFrame(()=>{
+                        window.location.href = '/front/index.html'
                     })  
                 },
                 toOrderPage(){

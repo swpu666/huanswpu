@@ -29,7 +29,7 @@
         </div>
     </el-header>
       <el-main style="max-width: 400px;top:20%;width: 100%; height: 70%;position: absolute;">
-        <el-card class="box-card">
+        <el-card class="box-card" style="margin-bottom: 30px;">
           <template #header>
             <div class="card-header">
               <span style="font-size: 15px;">距离：10km</span>
@@ -50,6 +50,31 @@
         </div>
         <el-button type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
         </el-card>
+
+      
+
+        <el-card class="box-card" v-for="(item,index) of orderInfo"  style="margin-bottom: 30px;">
+          <template #header>
+            <div class="card-header">
+              <span style="font-size: 15px;">点餐时间：{{item.orderTime}}</span>
+              <span style="font-size: 15px; color: red;float: right;">￥:{{item.amount}}</span>
+            </div>
+          </template>
+          <div style="font-size: 15px;">
+          <span style="color: green;">取:</span>
+          <span>{{item.employeeAddress}}</span>
+        </div>
+        <div style="font-size: 15px; margin-top: 15px;">
+          <span style="margin-top: 10px; color: rgb(0, 145, 255);">送:</span>
+          <span >{{item.userAddress}}</span><br>
+        </div>
+        <div style="font-size: 15px; margin-top: 15px;">
+          <span style="margin-top: 10px; color: red;">顾客电话:</span>
+          <span >15386614967</span><br>
+        </div>
+        <el-button type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
+        </el-card>
+
       </el-main>
       <el-footer height="10%" style="border-top:gray solid 1px; position: absolute;bottom: 0;width: 100%;">
         <div style="cursor: pointer; margin-top: 15px; margin-left: 50px; display: inline-block;text-align: center;">
@@ -76,6 +101,7 @@
 <script src="js/request.js"></script>
 <script src="js/common.js"></script>
 <script src="api/main.js"></script>
+<script src="api/order.js"></script>
 </body>
 <script>
   new Vue({
@@ -86,6 +112,7 @@
         activeType:0,
         categoryList:[],
         categoryId:undefined,
+        orderInfo:[],
         dishList:[],
         cartData:[],
         dialogFlavor:{
@@ -143,30 +170,15 @@
     },
     methods:{
       //初始化数据
-      initData(){
-        Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
-          //获取分类数据
-          if(res[0].code === 1){
-            this.categoryList = res[0].data
-            if(Array.isArray(res[0].data) && res[0].data.length > 0){
-              this.categoryId = res[0].data[0].id
-              if(res[0].data[0].type === 1){
-                this.getDishList()
-              }else{
-                this.getSetmealData()
-              }
-            }
+      async initData(){
+          const res = await orderReceive();
+          if(res.code === 1){
+           this.orderInfo = res.data
+           console.log(orderInfo)
           }else{
             this.$notify({ type:'warning', message:res[0].msg});
           }
-          //获取菜品数据
-          if(res[1].code === 1){
-            this.cartData = res[1].data
-          }else{
-            this.$notify({ type:'warning', message:res[1].msg});
-          }
-        })
-      },
+        },
       //分类点击
       categoryClick(index,id,type){
         this.activeType = index

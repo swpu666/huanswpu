@@ -1,4 +1,4 @@
-0//提交订单
+//提交订单
 function  addOrderApi(data){
     return $axios({
         'url': '/order/submit',
@@ -30,5 +30,13 @@ function orderAgainApi(data) {
       'url': '/order/again',
       'method': 'post',
       data
+  })
+}
+// 查询未被接单的订单
+
+function orderReceive() {
+  return $axios({
+      'url': '/order/receive',
+      'method': 'get',
   })
 }
