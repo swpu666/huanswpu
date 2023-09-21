@@ -69,10 +69,10 @@
           <span >{{item.userAddress}}</span><br>
         </div>
         <div style="font-size: 15px; margin-top: 15px;">
-          <span style="margin-top: 10px; color: red;">顾客电话:</span>
-          <span >15386614967</span><br>
+          <span style="margin-top: 10px; color: red;">:</span>
+          <span >{{item.orderId}}</span><br>
         </div>
-        <el-button type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
+        <el-button @click="receivingOrders(item)" type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
         </el-card>
 
       </el-main>
@@ -174,8 +174,18 @@
           const res = await orderReceive();
           if(res.code === 1){
            this.orderInfo = res.data
-           console.log(orderInfo)
           }else{
+            this.$notify({ type:'warning', message:res[0].msg});
+          }
+        },
+        //骑手接单
+        async receivingOrders(data){
+          console.log(data)
+         let res =await deliveryReceive({id:data.orderId,orderTime:data.orderTime,amount:data.amount,address:data.userAddress,})
+         if(res.code == 1){
+          console.log(res)
+         }
+         else{
             this.$notify({ type:'warning', message:res[0].msg});
           }
         },

@@ -98,7 +98,7 @@
   cursor: pointer;
 }
 
-.navbar .right-menu img {
+ .navbar .right-menu> img {
   margin-top: 20px;
   margin-left: 10px;
   width: 25px;

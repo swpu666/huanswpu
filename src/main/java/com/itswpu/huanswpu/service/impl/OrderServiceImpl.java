@@ -155,6 +155,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
      */
     @Transactional
     public void receive(Orders orders) {
+
         //获得当前用户id
         Long deliveryId = BaseContext.getCurrentId();
 
@@ -165,6 +166,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         Long addressBookId = orders.getAddressBookId();
         AddressBook addressBook = addressBookService.getById(addressBookId);
         if(addressBook == null){
+//            throw new CustomException(orders.toString());
             throw new CustomException("用户地址信息有误，不能接单");
         }
 

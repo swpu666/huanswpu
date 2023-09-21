@@ -40,3 +40,11 @@ function orderReceive() {
       'method': 'get',
   })
 }
+
+function deliveryReceive(data) {
+  return $axios({
+      'url': '/order/receive',
+      'method': 'post',
+      data
+  })
+}

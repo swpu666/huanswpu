@@ -9,6 +9,8 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="plugins/element-ui/index.css" />
     <link rel="stylesheet" href="styles/common.css" />
+      <!--引入vant样式-->
+      <link rel="stylesheet" href="../front/styles/vant.min.css"/>
     <link rel="stylesheet" href="styles/index.css" />
     <link rel="stylesheet" href="styles/icon/iconfont.css" />
     <style>
@@ -25,6 +27,9 @@
 
       .el-menu-item.is-active {
         background-color: #00ccff !important;
+      }
+      .el-avatar>img{
+        width: 100%;
       }
     </style>
   </head>
@@ -88,7 +93,7 @@
             <div class="right-menu">
               <!-- <div class="logout" @click="logout">退出</div> -->
               <img src="images/icons/btn_close@2x.png" class="outLogin" alt="退出" @click="logout" />
-              <el-avatar :size="25" :src="userInfo.avatar" style="margin-top: 20px;margin-right: 10px;margin-left: 20px"></el-avatar>
+              <el-avatar :fit="'fill'" :size="25" :src="imgPathConvert(userInfo.avatar)" style="margin-top: 20px;margin-right: 10px;margin-left: 20px"></el-avatar>
               <div class="avatar-wrapper">{{ userInfo.name }}</div>  <!--在右上角动态显示当前用户name'-->
 
             </div>
@@ -114,10 +119,13 @@
     <script src="plugins/vue/vue.js"></script>
     <!-- 引入组件库 -->
     <script src="plugins/element-ui/index.js"></script>
+    <!-- 引入vant样式 -->
+    <script src="../front/js/vant.min.js">  </script>
     <!-- 引入axios -->
     <script src="plugins/axios/axios.min.js"></script>
     <script src="js/request.js"></script>
     <script src="./api/login.js"></script>
+    <script src="./js/common.js"></script>
     <script>
 
       new Vue({
@@ -198,6 +206,10 @@
               }
             })
           },
+          //   //网络图片路径转换
+         imgPathConvert(path){
+          return imgPath(path)
+         },
           goBack() {
             // window.location.href = 'javascript:history.go(-1)'
             const menu = this.menuList.find(item=>item.id===this.menuActived)

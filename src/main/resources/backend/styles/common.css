@@ -13068,6 +13068,7 @@ input[type="number"] {
   display: block;
   height: 100%;
   vertical-align: middle;
+  width: 100%;
 }
 .el-avatar--circle {
   border-radius: 50%;
