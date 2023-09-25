@@ -151,32 +151,40 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     /**
      * 骑手接单
-     * @param orders
+     * @param ids
      */
     @Transactional
-    public void receive(Orders orders) {
-
+    public void receive(Long[] ids) {
         //获得当前用户id
         Long deliveryId = BaseContext.getCurrentId();
 
-        //查询用户数据
-        User user = userService.getById(deliveryId);
+//        //查询用户数据
+//        User user = userService.getById(deliveryId);
+//
+//        //查询地址数据
+//        Long addressBookId = orders.getAddressBookId();
+//        AddressBook addressBook = addressBookService.getById(addressBookId);
+//
+//        //set  订单数据
+//        orders.setStatus(3);//已派送状态
+//        //接单
+//        //向订单表更新数据
+//        this.updateById(orders);
+//
+//        log.info("骑手"+deliveryId+"接单"+orders);
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        //添加过滤条件
+        queryWrapper.in(Orders::getId,ids);
 
-        //查询地址数据
-        Long addressBookId = orders.getAddressBookId();
-        AddressBook addressBook = addressBookService.getById(addressBookId);
-        if(addressBook == null){
-//            throw new CustomException(orders.toString());
-            throw new CustomException("用户地址信息有误，不能接单");
+        List<Orders> list = this.list(queryWrapper);
+
+        for (Orders orders : list) {
+            orders.setStatus(3);
+            orders.setDeliveryId(deliveryId);
+            System.out.println(deliveryId);
+            this.updateById(orders);
         }
 
-        //set  订单数据
-        orders.setStatus(3);//已派送状态
-        orders.setUserId(deliveryId);//接单
-        //向订单表更新数据
-        this.updateById(orders);
-
-        log.info("骑手"+deliveryId+"接单"+orders);
     }
 
     @Override

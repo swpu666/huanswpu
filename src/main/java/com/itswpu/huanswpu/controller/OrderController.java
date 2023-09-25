@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
+import com.itswpu.huanswpu.dto.OrderDetailDto;
 import com.itswpu.huanswpu.dto.OrderReceiveDto;
 import com.itswpu.huanswpu.entity.*;
 import com.itswpu.huanswpu.mapper.OrdersEmployeeMapper;
@@ -37,7 +38,8 @@ public class OrderController {
     @Autowired
     private OrderDetailService orderDetailService;
 
-    @Autowired AddressBookService addressBookService;
+    @Autowired
+    private AddressBookService addressBookService;
 
     /**
      * 用户下单
@@ -50,16 +52,32 @@ public class OrderController {
         orderService.submit(orders);
         return R.success("下单成功");
     }
-    /**
+      /**
      * 骑手接单
-     * @param orders
+     * @param ids
      * @return
      */
     @PostMapping("/receive")
-    public R<String> receive(@RequestBody Orders orders){
-        log.info("订单数据：{}",orders);
-        orderService.receive(orders);
+    public R<String> receive(@RequestBody Long[] ids){
+        log.info("订单数据：{}",ids);
+        orderService.receive(ids);
         return R.success("接单成功");
+    }
+    /**
+     * 历史订单
+     * @param
+     * @return
+     */
+    @GetMapping("/history")
+    public R<List<Orders>> getHistoryOrders(){
+        Long deliveryId = BaseContext.getCurrentId();
+
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        //添加排序条件
+        queryWrapper.eq(Orders::getDeliveryId,deliveryId);
+        //添加过滤条件
+        List<Orders> list = orderService.list(queryWrapper);
+        return R.success(list);
     }
 
     @Autowired
@@ -182,20 +200,27 @@ public class OrderController {
     }
 
     /**
-     * 确认订单
+     *接单详细
      * @param id
      * @return
      */
     @ApiOperation("接单详细")
     @GetMapping("/receive/{id}")
-    public R<List<OrderDetail>> receiveConfirm(@PathVariable Long id){
+    public R<OrderDetailDto> receiveConfirm(@PathVariable Long id){
+        OrderDetailDto orderDetailDto = new OrderDetailDto();
         //条件构造器
         LambdaQueryWrapper<OrderDetail> queryWrapper = new LambdaQueryWrapper<>();
         //添加过滤条件
         queryWrapper.eq(OrderDetail::getOrderId,id);
 
         List<OrderDetail> list = orderDetailService.list(queryWrapper);
-        return R.success(list);
+        orderDetailDto.setPhone(orderService.getById(id).getPhone());
+        orderDetailDto.setOrderDetails(list);
+        return R.success(orderDetailDto);
     }
+
+    /**
+     * 历史订单
+     */
 
 }

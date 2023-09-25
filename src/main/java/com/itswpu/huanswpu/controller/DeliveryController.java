@@ -1,6 +1,7 @@
 package com.itswpu.huanswpu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
 import com.itswpu.huanswpu.entity.Delivery;
 import com.itswpu.huanswpu.entity.User;
@@ -90,6 +91,7 @@ public class DeliveryController {
                 delivery.setStatus(1);
                 deliveryService.save(delivery);
             }
+            BaseContext.setCurrentId(delivery.getId());
             session.setAttribute("delivery",delivery.getId());
             //如果用户登录成功，删除redis中缓存的验证码
             redisTemplate.delete(phone);

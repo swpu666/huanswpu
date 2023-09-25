@@ -13,9 +13,9 @@ public interface OrderService extends IService<Orders> {
 
     /**
      * 骑手接单
-     * @param orders
+     * @param ids
      */
-    public void receive(Orders orders);
+    public void receive(Long[] ids);
 
 
     void delete(Orders orders);
