@@ -137,7 +137,7 @@ public class CategoryController {
         }
 
         if(!CollectionUtils.isNotEmpty(ids)){
-            return R.success(null);
+            return R.error("该商家未上架分类数据");
         }
 
         //条件构造器
@@ -150,5 +150,6 @@ public class CategoryController {
 
         List<Category> categoryList = categoryService.list(qw);
         return R.success(categoryList);
+
     }
 }
