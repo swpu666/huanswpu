@@ -37,15 +37,13 @@ public class LoginCheckFilter implements Filter{
                 "/common/**",//上传文件等的控制层资源
                 "/user/sendMsg", //移动端发送短信
                 "/user/login",  //移动端登录
+                "/delivery/login",
                 "/delivery/sendMsg", //移动端发送短信
-                "/delivery/login",  //移动端登录
                 //下面这四个是 Swagger生成的接口文档 放行
                 "/doc.html",
                 "/webjars/**",
                 "/swagger-resources",
-                "/v2/api-docs",
-                "/delivery/**",
-                "/order/**",
+                "/v2/api-docs"
 
         };
         //2、判断本次请求是否需要处理
@@ -73,6 +71,7 @@ public class LoginCheckFilter implements Filter{
             log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("user"));
             Long userId = (Long) request.getSession().getAttribute("user");
             BaseContext.setCurrentId(userId);//获得ID给元数据处理器用
+
             filterChain.doFilter(request,response);
             return;
         }
@@ -81,6 +80,7 @@ public class LoginCheckFilter implements Filter{
             log.info("骑手已登录，骑手id为：{}",request.getSession().getAttribute("delivery"));
             Long deliveryId = (Long) request.getSession().getAttribute("delivery");
             BaseContext.setCurrentId(deliveryId);//获得ID给元数据处理器用
+
             filterChain.doFilter(request,response);
             return;
         }
