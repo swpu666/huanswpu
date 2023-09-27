@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-    <title>店铺名称</title>
+    <title>商铺详情</title>
     <link rel="icon" href="../../backend/favicon.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="../js/base.js"></script>
@@ -13,12 +13,20 @@
     <!-- 引入样式  -->
     <link rel="stylesheet" href="../styles/index.css" />
     <!--本页面内容的样式-->
-    <link rel="stylesheet" href="../styles/pay-success.css" />
+    <link rel="stylesheet" href="../styles/main.css" />
+    <script>
+        //获取商家id
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null)
+                return (r[2]);
+            return null;
+        }
+        employeeId= GetQueryString('id');
+    </script>
 </head>
 <body>
-    <!--const urlParams = new URLSearchParams(window.location.search);-->
-    <!--const id = urlParams.get('id');-->
-
     <div id="main" class="app">
         <div class="divHead">
             <img src="../images/user.png" @click="toUserPage"/>
@@ -27,7 +35,7 @@
             <div class="divStatic">
                 <img src="../images/swpu.ico" class="logo"/>
                 <div class="divDesc">
-                    <div class="divName">这是一个店铺页</div>
+                    <div class="divName">{{employeeName}}</div>
                     <div class="divSend">
                         <span><img src="../images/time.png"/> 距离1.0km</span>
                         <span><img src="../images/money.png"/> 配送费6元</span>
@@ -36,7 +44,7 @@
                 </div>
             </div>
             <div class="divDesc">
-                简介: 今天吃什么中餐厅是点餐的独立的品牌，定位“大众 化的美食外送餐饮”，旨为顾客打造专业美食。
+                简介: 今天吃什么中餐厅是点餐的独立的品牌，定位“大众化的美食外送餐饮”，旨为顾客打造专业美食。
             </div>
         </div>
         <div class="divBody">
@@ -226,11 +234,13 @@
     <script src="../js/request.js"></script>
     <script src="../js/common.js"></script>
     <script src="../api/main.js"></script>
+    <script src="../api/employee.js"></script>
     <script>
         new Vue({
             el:'#main',
             data(){
                 return {
+                    employeeName:"",
                     //左边菜品类别index
                     activeType:0,
                     categoryList:[],
@@ -292,8 +302,17 @@
             },
             methods:{
                 //初始化数据
-                initData(){
-                    Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
+                async initData(){
+                    const res = await employeeListApi();
+                    if(res.code==1){
+                        this.employeeList=res.data;
+                        const dataArray = res.data;
+                        this.employeeName = dataArray.find(item => item.id === employeeId)?.name;
+                    }
+                    else{
+                        this.$notify({ type:'warning', message:res.msg});
+                    }
+                    Promise.all([categoryListApi(employeeId),cartListApi({})]).then(res=>{
                         //获取分类数据
                         if(res[0].code === 1){
                             this.categoryList = res[0].data
