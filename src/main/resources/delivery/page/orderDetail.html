@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <title>环西柚美食</title>
+    <link rel="icon" href="../../backend/favicon.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="../js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css" />
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css" />
+    <!--引入vant样式-->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/order.css" />
+</head>
+<body>
+<div>
+    <el-card class="box-card" style="margin-bottom: 30px;">
+        <template #header>
+            <div class="card-header">
+                <span style="font-size: 15px;">距离：10km</span>
+                <span style="font-size: 15px; color: red;float: right;">￥:8</span>
+            </div>
+        </template>
+        <div style="font-size: 15px;">
+            <span style="color: green;">取:</span>
+            <span>正因村12街97号德玛西亚三汁焖锅店(石油大学店)</span>
+        </div>
+        <div style="font-size: 15px; margin-top: 15px;">
+            <span style="margin-top: 10px; color: rgb(0, 145, 255);">送:</span>
+            <span >西南石油大学成都校区15栋寝室</span><br>
+        </div>
+        <div style="font-size: 15px; margin-top: 15px;">
+            <span style="margin-top: 10px; color: red;">顾客电话:</span>
+            <span >15386614967</span><br>
+        </div>
+        <el-button type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
+    </el-card>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant组件 -->
+<script src="../js/vant.min.js"></script>
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script src="../api/order.js"></script>
+</body>
+</html>

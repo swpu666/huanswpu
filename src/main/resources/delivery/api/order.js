@@ -48,3 +48,11 @@ function deliveryReceive(data) {
       data
   })
 }
+
+// 查询历史订单
+function deliveryHistory() {
+  return $axios({
+      'url': '/order/history',
+      'method': 'get',
+  })
+}

@@ -85,17 +85,8 @@
 <el-container class="el-container ">
   <el-header class="el-header">欢迎点餐</el-header>
   <el-main class="el-main">
-    <el-card class="box-card">
-      <div @click="toShopPage">
-        <img src="images/雨夜.png" style="width: 40%;height: 90%;display: inline-block;" alt="">
-        <div style="display: inline-block; width: 58%;height: 90%;text-align: center;">
-          <span class="businessName">店铺名字嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻信息</span>
-          <span class="deliveryFee">免配送费</span>
-        </div>
-      </div>
-    </el-card>
     <el-card class="box-card" v-for="(item,index) of employeeList">
-      <img src="item.avatar" style="width: 40%;height: 90%;display: inline-block;" alt="">
+      <img :src="imgPathConvert(item.avatar)" style="width: 40%;height: 90%;display: inline-block;" alt="">
       <div @click="toShopPage" style="display: inline-block; width: 58%;height: 90%;text-align: center;">
         <span class="businessName">{{item.name}}</span>
         <span class="deliveryFee">免配送费</span>  
@@ -180,6 +171,10 @@
         }else{
           this.$notify({ type:'warning', message:res.msg});
         }
+      },
+      //网络图片路径转换
+      imgPathConvert(path){
+        return imgPath(path)
       },
     },
     computed:{

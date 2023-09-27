@@ -69,7 +69,7 @@
           <span >{{item.userAddress}}</span><br>
         </div>
         <div style="font-size: 15px; margin-top: 15px;">
-          <span style="margin-top: 10px; color: red;">:</span>
+          <span style="margin-top: 10px; color: red;">订单编号:</span>
           <span >{{item.orderId}}</span><br>
         </div>
         <el-button @click="receivingOrders(item)" type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
@@ -88,6 +88,7 @@
       </el-footer>
     </el-container>
   </div>
+</div>
 
 
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -180,10 +181,15 @@
         },
         //骑手接单
         async receivingOrders(data){
-          console.log(data)
-         let res =await deliveryReceive({id:data.orderId,orderTime:data.orderTime,amount:data.amount,address:data.userAddress,})
-         if(res.code == 1){
+         let res =await deliveryReceive([data.orderId])
           console.log(res)
+         if(res.code === 1){
+           this.$notify({
+             title: '接单成功',
+             message: '接单成功查请到个人订单处查看具体信息',
+             type: 'success'
+           });
+          location.reload()
          }
          else{
             this.$notify({ type:'warning', message:res[0].msg});
