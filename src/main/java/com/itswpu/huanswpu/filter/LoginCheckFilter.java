@@ -37,7 +37,7 @@ public class LoginCheckFilter implements Filter{
                 "/common/**",//上传文件等的控制层资源
                 "/user/sendMsg", //移动端发送短信
                 "/user/login",  //移动端登录
-                "/delivery/login",
+                "/delivery/**",
                 "/delivery/sendMsg", //移动端发送短信
                 //下面这四个是 Swagger生成的接口文档 放行
                 "/doc.html",

@@ -56,3 +56,11 @@ function deliveryHistory() {
       'method': 'get',
   })
 }
+
+// 查询单个订单详细数据
+function receiveConfirm(id) {
+    return $axios({
+        'url': '/order/receive/'+id,
+        'method': 'get',
+    })
+}

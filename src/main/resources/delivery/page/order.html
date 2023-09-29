@@ -51,12 +51,12 @@
                     <template #header>
                         <div class="card-header">
                             <span style="font-size: 15px;">下单时间:{{item.orderTime}}</span>
-                            <span style="font-size: 15px; color: red;float: right;">￥:{{item.}}</span>
+                            <span style="font-size: 15px; color: red;float: right;">￥:{{item.amount}}</span>
                         </div>
                     </template>
                     <div style="font-size: 15px;">
                         <span style="color: green;">取:</span>
-                        <span>{{item.address}}</span>
+                        <span>{{item.consignee}}</span>
                     </div>
                     <div style="font-size: 15px; margin-top: 15px;">
                         <span style="margin-top: 10px; color: rgb(0, 145, 255);">送:</span>
@@ -64,9 +64,9 @@
                     </div>
                     <div style="font-size: 15px; margin-top: 15px;">
                         <span style="margin-top: 10px; color: red;">订单编号:</span>
-                        <span >{{ }}</span><br>
+                        <span >{{item.id}}</span><br>
                     </div>
-                    <el-button type="primary" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">抢单</el-button>
+                    <el-button type="primary" @click="toOrderDetail(item.id)" style="width: 100%; margin-top: 15px;height: 30px; padding-top:7px;">查看详情</el-button>
                 </el-card>
             </div>
             <!-- <div class="divNoData" v-else>
@@ -106,6 +106,9 @@
             },
             mounted(){},
             methods:{
+                toOrderDetail(id){
+                    window.location.href= '/delivery/page/orderDetail.html?id='+id
+                },
                 goBack(){
                     const url = document.referrer
                     //表示是从订单页面跳转过来的
@@ -118,7 +121,6 @@
                     }
                 },
                 async initData() {
-                    this.getList()
                     const res = await deliveryHistory()
                     if(res.code===1){
                         this.orderList = res.data
@@ -126,7 +128,6 @@
                     else{
                         this.$notify({ type:'warning', message:res.msg});
                     }
-                    console.log(res)
                 },
 
                 async addOrderAgain(order){

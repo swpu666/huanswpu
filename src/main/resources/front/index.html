@@ -85,31 +85,11 @@
 <el-container class="el-container ">
   <el-header class="el-header">欢迎点餐</el-header>
   <el-main class="el-main">
-<<<<<<< HEAD
     <el-card class="box-card" v-for="(item,index) of employeeList">
       <img :src="imgPathConvert(item.avatar)" style="width: 40%;height: 90%;display: inline-block;" alt="">
       <div @click="toShopPage" style="display: inline-block; width: 58%;height: 90%;text-align: center;">
         <span class="businessName">{{item.name}}</span>
         <span class="deliveryFee">免配送费</span>  
-=======
-    <el-card class="box-card">
-      <div @click="toShopPage">
-        <img src="images/雨夜.png" style="width: 40%;height: 90%;display: inline-block;" alt="">
-        <div style="display: inline-block; width: 58%;height: 90%;text-align: center;">
-          <span class="businessName">店铺名字嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻信息</span>
-          <span class="deliveryFee">免配送费</span><br>
-        </div>
-      </div>
-    </el-card>
-    <el-card class="box-card" v-for="(item,index) of employeeList">
-      <div @click="toShopPage">
-        <img src="item.avatar" style="width: 40%;height: 90%;display: inline-block;" alt="">
-        <div  style="display: inline-block; width: 58%;height: 90%;text-align: center;">
-          <span class="businessName">{{item.name}}</span>
-          <span class="deliveryFee">免配送费</span><br>
-          <p style="display: none">{{item.id}}</p>
-        </div>
->>>>>>> f4aec07ee31ded1d7869f4c94b35e03238e22522
       </div>
       </el-card>
   </el-main>

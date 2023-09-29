@@ -189,7 +189,9 @@
              message: '接单成功查请到个人订单处查看具体信息',
              type: 'success'
            });
-          location.reload()
+           window.setTimeout(function () {
+             location.reload()
+           },3000)
          }
          else{
             this.$notify({ type:'warning', message:res[0].msg});
