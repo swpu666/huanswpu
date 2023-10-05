@@ -54,7 +54,7 @@
               text-color="#bfcbd9"
               active-text-color="#f4f4f5"
             >
-              <div v-for="item in menuList" :key="item.id" >
+              <div v-for="item in menuList" :key="item.id"  v-if="(isBusiness == false && item.id!=3)|| (isBusiness == true && item.id!=2)">
               <!--  menuList必须和下面的对应 item就像加强for的元素 -->
                 <el-submenu :index="item.id" v-if="item.children && item.children.length>0">
                 <!--   因为只有一个层次关系 v-if没设置成立 直接到v-else-->
@@ -132,9 +132,9 @@
         el: '#app',
         data() {
           return {
-            defAct: '2',
-            menuActived: '2',
-            isBusiness: false,
+            defAct: '3',
+            menuActived: '3',
+            isBusiness: true,
             userInfo: {},
             menuList: [//左侧导航菜单 用el-menu的v-for遍历展示
               // {
@@ -187,7 +187,13 @@
           //从浏览器取出之前set的userInfo
           if (userInfo) {
             this.userInfo = JSON.parse(userInfo)//在数据模型里面添加
+            if (this.userInfo.username==="admin"){
+              this.isBusiness = false   
+              this.menuActived='2',
+              this.defAct='2'
+            }
           }
+
           this.closeLoading()
         },
         beforeDestroy() {

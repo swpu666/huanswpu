@@ -242,7 +242,6 @@
 }
 .el-menu .el-menu-item:hover {
   color: #ffffff !important;
-  background-color: transparent !important;
 }
 .el-menu .el-menu-item:hover span {
   color: #ffffff !important;
