@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "@vueuse/core": "^9.13.0",
-    "@vueuse/integrations": "^9.13.0",
-    "element-plus": "^2.3.7",
-    "universal-cookie": "^4.0.4"
-  }
-}
