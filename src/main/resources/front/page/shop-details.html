@@ -302,42 +302,7 @@
             },
             methods:{
                 //初始化数据
-                // async initData(){
-                //     const res = await employeeListApi();
-                //     if(res.code==1){
-                //         this.employeeList=res.data;
-                //         const dataArray = res.data;
-                //         this.employeeName = dataArray.find(item => item.id === employeeId)?.name;
-                //     }
-                //     else{
-                //         this.$notify({ type:'warning', message:res.msg});
-                //     }
-                //     Promise.all([categoryListApi(employeeId),cartListApi({})]).then(res=>{
-                //         //获取分类数据
-                //         if(res[0].code === 1){
-                //             this.categoryList = res[0].data.
-                //             if(Array.isArray(res[0].data) && res[0].data.length > 0)
-                //             {
-                //                 this.categoryId = res[0].data[0].id
-                //                 if(res[0].data[0].type === 1){
-                //                     this.getDishList()
-                //                 }else{
-                //                     this.getSetmealData()
-                //                 }
-                //             }
-                //         }else{
-                //             this.$notify({ type:'warning', message:res[0].msg});
-                //         }
-                //         //获取菜品数据
-                //         if(res[1].code === 1){
-                //             this.cartData = res[1].data
-                //         }else{
-                //             this.$notify({ type:'warning', message:res[1].msg});
-                //         }
-                //     })
-                // },
                 async initData() {
-                    console.log(employeeId);
                     try {
                         const [employeeListResponse, categoryCartResponse] = await Promise.all([
                             employeeListApi(),

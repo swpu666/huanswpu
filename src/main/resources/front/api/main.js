@@ -5,13 +5,13 @@
 //       'method': 'get',
 //     })
 //   }
-//获取employeeId对应的菜品分类
-function categoryListApi(employeeId) {
+//获取商家id对应的菜品分类
+function categoryListApi(id) {
     return $axios({
-        'url': '/category/list',
+        'url': '/category/userList',
         'method': 'get',
         params: {
-            employeeId: employeeId // 将 employeeId 作为查询参数传递给后端
+            id: id // 将 employeeId 作为查询参数传递给后端
         }
     });
 }
