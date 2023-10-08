@@ -121,21 +121,65 @@ public class CategoryController {
     }
 
     /**
-     * 根据条件查询分类数据
-     * @param employeeId
+     * 后台管理端 添加 分类数据时 根据条件 查询分类数据
+     * @param category
      * @return
      */
     @GetMapping("/list")
-    public R<List<Category>> list( Long employeeId){
-        //获取id列表
+    public R<List<Category>> list(Category category){
+
+//        获取id列表
         LambdaQueryWrapper<CategoryEmployee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CategoryEmployee::getEmployeeId, employeeId);
+        queryWrapper.eq(CategoryEmployee::getEmployeeId,  BaseContext.getCurrentId());
         List<CategoryEmployee> list = categoryEmployeeService.list(queryWrapper);
         ArrayList<Long> ids = new ArrayList<>();
+
         for (CategoryEmployee categoryEmployee : list) {
             ids.add(categoryEmployee.getCategoryId());
         }
+//        System.out.println(ids.toString()+"000+."+list.toString()+"+5+555+5ids"+ids);
+        if(!CollectionUtils.isNotEmpty(ids)){
+            return R.error("该商家未上架分类数据");
+        }
 
+        //条件构造器
+        LambdaQueryWrapper<Category> qw = new LambdaQueryWrapper<>();
+        //添加条件
+        qw.eq(category.getType() != null,Category::getType,category.getType());
+        qw.in(CollectionUtils.isNotEmpty(ids) , Category::getId , ids);
+        //添加排序条件
+        qw.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+
+        List<Category> categoryList = categoryService.list(qw);
+        return R.success(categoryList);
+    }
+
+    /**
+     * 用户浏览端 查看 分类数据时 根据商家id  查询分类数据
+     * @param id
+     * @return
+     */
+
+    @GetMapping("/userList")
+    public R<List<Category>> list(@RequestParam("id") String id){
+        Long emploeeId = 0L;
+        try {
+            emploeeId = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            // 处理无法转换为Long类型的异常
+            // 返回错误信息或采取其他处理措施
+            return R.error("该商家id错误");
+        }
+        //获取id列表
+        LambdaQueryWrapper<CategoryEmployee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CategoryEmployee::getEmployeeId, emploeeId);
+        List<CategoryEmployee> list = categoryEmployeeService.list(queryWrapper);
+        ArrayList<Long> ids = new ArrayList<>();
+
+        for (CategoryEmployee categoryEmployee : list) {
+            ids.add(categoryEmployee.getCategoryId());
+        }
+        System.out.println(emploeeId+"000+."+list.toString()+"+5+555+5ids"+ids);
         if(!CollectionUtils.isNotEmpty(ids)){
             return R.error("该商家未上架分类数据");
         }

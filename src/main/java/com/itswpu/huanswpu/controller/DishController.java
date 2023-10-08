@@ -10,6 +10,7 @@ import com.itswpu.huanswpu.dto.DishDto;
 import com.itswpu.huanswpu.entity.*;
 import com.itswpu.huanswpu.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -198,17 +199,6 @@ public class DishController {
     //根据条件查询对应的菜品数据
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish){
-        LambdaQueryWrapper<DishEmployee> qw = new LambdaQueryWrapper<>();
-        qw.eq(DishEmployee::getEmployeeId, BaseContext.getCurrentId());
-        List<DishEmployee> lists = dishEmployeeService.list(qw);
-        ArrayList<Long> ids = new ArrayList<>();
-        for (DishEmployee dishEmployee : lists) {
-            ids.add(dishEmployee.getDishId());
-        }
-
-        if(!CollectionUtils.isNotEmpty(ids)){
-            return R.success(null);
-        }
 
         List<DishDto> dishDtoList =null;
         //动态构造key
@@ -223,7 +213,6 @@ public class DishController {
         }
         //构造查询条件
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(Dish::getId,ids);
         queryWrapper.eq(dish.getCategoryId() != null ,Dish::getCategoryId,dish.getCategoryId());
         //添加条件，查询状态为1（起售状态）的菜品
         queryWrapper.eq(Dish::getStatus,1);
@@ -307,6 +296,26 @@ public class DishController {
         dishEmployeeService.remove(queryWrapper);
 
         return R.success("删除成功");
+    }
+
+    @GetMapping("/search")
+    public R< List <Dish> > search(@RequestParam("key") String prefix){
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(Dish::getName,prefix);
+        queryWrapper.eq(Dish::getStatus,1);
+        List<Dish> dishList = dishService.list(queryWrapper);
+
+//        //1.检查参数
+//        if(prefix == null || StringUtils.isBlank(prefix)){
+//            return R.error("关键字传递为空");
+//        }
+//        Long currentId  = BaseContext.getCurrentId();
+//
+//        //异步调用 保存搜索记录
+//        if(currentId != null && dto.getFromIndex() == 0){
+//            apUserSearchService.insert(dto.getSearchWords(), user.getId());
+
+        return R.success( dishList );
     }
 
 
