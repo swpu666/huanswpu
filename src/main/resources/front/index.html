@@ -89,7 +89,8 @@
       <img :src="imgPathConvert(item.avatar)" style="width: 40%;height: 90%;display: inline-block;" alt="">
       <div @click="toShopPage" style="display: inline-block; width: 58%;height: 90%;text-align: center;">
         <span class="businessName">{{item.name}}</span>
-        <span class="deliveryFee">免配送费</span>  
+        <span class="deliveryFee">免配送费</span>
+        <p style="display: none">{{item.id}}</p>
       </div>
       </el-card>
   </el-main>

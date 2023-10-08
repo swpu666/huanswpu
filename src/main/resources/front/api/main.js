@@ -1,10 +1,20 @@
 //获取所有的菜品分类
-function categoryListApi() {
+// function categoryListApi() {
+//     return $axios({
+//       'url': '/category/list',
+//       'method': 'get',
+//     })
+//   }
+//获取employeeId对应的菜品分类
+function categoryListApi(employeeId) {
     return $axios({
-      'url': '/category/list',
-      'method': 'get',
-    })
-  }
+        'url': '/category/list',
+        'method': 'get',
+        params: {
+            employeeId: employeeId // 将 employeeId 作为查询参数传递给后端
+        }
+    });
+}
 //获取菜品分类对应的菜品
 function dishListApi(data) {
     return $axios({
