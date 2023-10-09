@@ -9,6 +9,7 @@ import com.itswpu.huanswpu.common.R;
 import com.itswpu.huanswpu.dto.DishDto;
 import com.itswpu.huanswpu.entity.*;
 import com.itswpu.huanswpu.service.*;
+import com.itswpu.huanswpu.service.impl.EmployeeServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -298,12 +299,31 @@ public class DishController {
         return R.success("删除成功");
     }
 
+
+
     @GetMapping("/search")
     public R< List <Dish> > search(@RequestParam("key") String prefix){
-        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(Dish::getName,prefix);
-        queryWrapper.eq(Dish::getStatus,1);
-        List<Dish> dishList = dishService.list(queryWrapper);
+        LambdaQueryWrapper<DishEmployee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(DishEmployee::getName,prefix);
+//        queryWrapper.eq(DishEmployee::getStatus,1);
+        List<DishEmployee> dishEmployeeList = dishEmployeeService.list(queryWrapper);
+
+        List<Long> ids =new ArrayList<>();
+
+        for (DishEmployee de: dishEmployeeList){
+            ids.add( de.getDishId() );
+        }
+        if(!CollectionUtils.isNotEmpty(ids)){
+            return R.error("未搜到相关菜品");
+        }
+        //条件构造器
+        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+        //添加过滤条件
+        qw.in(Dish::getId,ids);
+        //添加排序条件
+        qw.orderByDesc(Dish::getUpdateTime);
+
+        List<Dish> dishList = dishService.list(qw);
 
 //        //1.检查参数
 //        if(prefix == null || StringUtils.isBlank(prefix)){
@@ -318,5 +338,27 @@ public class DishController {
         return R.success( dishList );
     }
 
+    @Autowired
+    public EmployeeService employeeService;
 
-}
+    //通过菜品id查商家id接口
+    @GetMapping("/searchByDishId")
+    public R<Employee> searchEmployee(String dishId) {
+        if( StringUtils.isBlank(dishId) ){
+            return R.error("传递菜品id为空"+dishId);
+        }
+
+        LambdaQueryWrapper<DishEmployee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DishEmployee::getDishId,Long.getLong(dishId));
+//        queryWrapper.eq(DishEmployee::getStatus,1);
+        DishEmployee de = dishEmployeeService.getOne(queryWrapper);
+
+        Employee e = employeeService.getById(de.getId());
+        System.out.println("通过菜品"+dishId+"得到商家id"+e);
+
+        return R.success(e);
+    }
+
+
+
+    }
