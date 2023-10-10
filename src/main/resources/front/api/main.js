@@ -77,4 +77,25 @@ function setMealDishDetailsApi(id) {
     })
 }
 
+//根据菜品名来搜索菜品
+function searchDish(name) {
+    return axios({
+        'method': 'get',
+        'url': '/dish/search',
+        params: {
+            key: name
+        }
+    })
+}
+
+//根据菜品id来获取商铺id
+function getShopId(dishId) {
+    return axios({
+        'method': 'get',
+        'url': '/dish/searchByDishId',
+        params: {
+            dishId: dishId
+        }
+    })
+}
 

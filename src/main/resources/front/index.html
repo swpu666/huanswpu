@@ -83,7 +83,13 @@
 <body>
 <div id="main">
 <el-container class="el-container ">
-  <el-header class="el-header">欢迎点餐</el-header>
+  <el-header class="el-header">欢迎点餐 <br>
+    <div @click="toSearchPage">
+      <el-input placeholder="搜索菜品">
+        <el-button slot="append" icon="el-icon-search" @click="toSearchPage"></el-button>
+      </el-input>
+    </div>
+    </el-header>
   <el-main class="el-main">
     <el-card class="box-card" v-for="(item,index) of employeeList">
       <img :src="imgPathConvert(item.avatar)" style="width: 40%;height: 90%;display: inline-block;" alt="">
@@ -124,7 +130,6 @@
     el:'#main',
     data(){
       return {
-        id:0,
         dataArray:[],
         //左边菜品类别index
         activeType:0,
@@ -171,6 +176,11 @@
         const itemId = p.innerHTML;
         window.requestAnimationFrame(()=>{
           window.location.href= '/front/page/shop-details.html?id=' + itemId;
+        })
+      },
+      toSearchPage(){
+        window.requestAnimationFrame(()=>{
+          window.location.href= '/front/page/search-dish.html'
         })
       },
       async initData() {
