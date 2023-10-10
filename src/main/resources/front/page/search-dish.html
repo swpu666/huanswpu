@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <title>菜品搜索</title>
+    <link rel="icon" href="../../backend/favicon.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="../js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css" />
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css" />
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/main.css" />
+    <style>
+        .el-header {
+            background-color: #177cb0;
+            color: white;
+            text-align: center;
+            height: 10%;
+            display: block;
+        }
+        .el-main {
+            color: #333;
+            height: 78%;
+            display: block;
+        }
+        .el-footer{
+            color: #333;
+            height: 12%!important;
+            display: block;
+            border-top:gray solid 1px;
+        }
+        .el-container {
+            width: 100%;
+            height: 100%;
+        }
+        .text {
+            font-size: 14px;
+        }
+
+        .item {
+            padding: 18px 0;
+        }
+
+        .box-card {
+            width:100%;
+            height: 20%;
+            margin-bottom: 20px;
+        }
+        .el-card__body {
+            padding: 5px!important;
+            height: 100%;
+            margin: 0 auto;
+        }
+        .businessName{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            width: 100%;
+            user-select: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #191919;
+            font-family: "Core Sans D Font";
+        }
+        .deliveryFee{
+            float: left;
+            user-select: none;
+            font-size: 0.75rem;
+            padding-top: 7px;
+            line-height: 1.0625rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <el-container class="el-container ">
+        <el-header class="el-header">
+            <el-input placeholder="搜索菜品" v-model="searchText">
+                <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+            </el-input></el-header>
+        <el-main>
+            <el-card class="box-card" v-for="item in dishList" :key="item.id">
+                <el-image :src="imgPathConvert(item.image)" @click="toShopPage">
+                    <div slot="error" class="image-slot">
+                        <img src="../images/noImg.png"/>
+                    </div>
+                </el-image>
+                <div @click="toShopPage">
+                    <div class="divName">{{item.name}}</div>
+                    <div class="divDesc">{{item.description}}</div>
+                    <div class="divDesc">{{'月销' + (item.saleNum ? item.saleNum : 0)  }}</div>
+                    <div class="divBottom"><span>￥</span><span>{{item.price/100}}</span></div>
+                    <p style="display: none">{{item.id}}</p>
+                </div>
+            </el-card>
+        </el-main>
+    </el-container>
+</div>
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="../js/vant.min.js"></script>
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script src="../js/common.js"></script>
+<script src="../api/main.js"></script>
+<script src="../api/employee.js"></script>
+</body>
+<script>
+    new Vue({
+        el: '#main',
+        data() {
+            return {
+                searchText: '',
+                dataArray: [],
+                //左边菜品类别index
+                activeType: 0,
+                categoryList: [],
+                categoryId: undefined,
+                dishList: [],
+                cartData: [],
+                employeeList: [],
+                dialogFlavor: {
+                    name: '',
+                    flavors: [],
+                    dishId: undefined,
+                    price: undefined,
+                    show: false,
+                    image: ''
+                },
+                cartDialogShow: false,
+                detailsDialog: {
+                    show: false,
+                    item: {image: ''}
+                },
+                setMealDialog: {
+                    show: false,
+                    item: {}
+                },
+            }
+        },
+        mounted() {
+            this.initData()
+        },
+
+        methods: {
+            toUserPage() {
+                window.requestAnimationFrame(() => {
+                    window.location.href = '/front/page/user.html'
+                })
+            },
+            async toShopPage(event) {
+                var target = event.target;
+                if (target.tagName !== 'div') {
+                    target = target.closest('div');
+                }
+                const p = target.querySelector('p');
+                const dishId = p.innerHTML;
+                const res = await getShopId(dishId);
+                if (res.code === 1) {
+                    const shopId = res.data.id; // 商家id位于响应的data属性中
+                    console.log('商家id:', shopId);
+                } else {
+                    console.error('获取商家id失败:', res.msg);
+                }
+                window.requestAnimationFrame(() => {
+                    window.location.href = '/front/page/shop-details.html?id=' + shopId;
+                })
+            },
+            async search() {
+                this.dishList = [];
+                const res = await searchDish(this.searchText);
+                console.log("从服务器收到的响应：", res);
+                if(res.code === 1) {
+                    this.dishList = res.data;
+                }
+                console.log(this.dishList)
+            },
+            async initData() {
+                const res = await searchDish(this.searchText);
+                if (res.code === 1) {
+                    this.dishList = res.data
+                } else {
+                    this.$notify({type: 'warning', message: res.msg});
+                }
+            },
+            //网络图片路径转换
+            imgPathConvert(path) {
+                return imgPath(path)
+            },
+        }
+    })
+</script>
+</html>
