@@ -6,9 +6,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://123.60.24.27:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://47.108.254.143:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
-      password: 888888
+      password: b7c086361871d7a2
 #  shardingsphere:
 #    datasource:
 #      names:
@@ -47,13 +47,19 @@ spring:
 #    password: 123456
 #    database: 0
   redis: # 本地redis服务
-    host: 123.60.24.27
+    host: 47.108.254.143
     port: 6379
     password: 888888
     database: 0
   cache:
     redis:
       time-to-live: 1800000 #设置缓存数据的过期时间30min
+#  data:
+#    mongodb:
+#      host: 47.108.254.143
+#      port: 27017
+#      database: huanswpu-history
+
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射 属性值配：true
@@ -65,4 +71,5 @@ mybatis-plus:
     db-config:
       id-type: ASSIGN_ID
 reggie:
+#  path: /usr/img/    #上传文件到云服务器的位置
   path: D:\img\    #上传文件到本地的位置
