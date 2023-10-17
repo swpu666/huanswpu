@@ -54,11 +54,11 @@ spring:
   cache:
     redis:
       time-to-live: 1800000 #设置缓存数据的过期时间30min
-#  data:
-#    mongodb:
-#      host: 47.108.254.143
-#      port: 27017
-#      database: huanswpu-history
+  data:
+    mongodb:
+      host: 47.108.254.143
+      port: 27017
+      database: huanswpu-history
 
 mybatis-plus:
   configuration:
@@ -71,5 +71,6 @@ mybatis-plus:
     db-config:
       id-type: ASSIGN_ID
 reggie:
-#  path: /usr/img/    #上传文件到云服务器的位置
-  path: D:\img\    #上传文件到本地的位置
+  path: /usr/img/    #上传文件到云服务器的位置
+#  path: D:\img\
+  #上传文件到本地的位置

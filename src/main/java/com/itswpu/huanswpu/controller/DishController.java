@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -299,43 +300,53 @@ public class DishController {
         return R.success("删除成功");
     }
 
-
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/search")
-    public R< List <Dish> > search(@RequestParam("key") String prefix){
+    public R< List <Dish> > search(@RequestParam("key") String prefix) {
         LambdaQueryWrapper<DishEmployee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(DishEmployee::getName,prefix);
+        queryWrapper.like(DishEmployee::getName, prefix);
 //        queryWrapper.eq(DishEmployee::getStatus,1);
         List<DishEmployee> dishEmployeeList = dishEmployeeService.list(queryWrapper);
 
-        List<Long> ids =new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
 
-        for (DishEmployee de: dishEmployeeList){
-            ids.add( de.getDishId() );
+        for (DishEmployee de : dishEmployeeList) {
+            ids.add(de.getDishId());
         }
-        if(!CollectionUtils.isNotEmpty(ids)){
+        if (!CollectionUtils.isNotEmpty(ids)) {
             return R.error("未搜到相关菜品");
         }
         //条件构造器
         LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
         //添加过滤条件
-        qw.in(Dish::getId,ids);
+        qw.in(Dish::getId, ids);
         //添加排序条件
         qw.orderByDesc(Dish::getUpdateTime);
 
         List<Dish> dishList = dishService.list(qw);
 
-//        //1.检查参数
-//        if(prefix == null || StringUtils.isBlank(prefix)){
-//            return R.error("关键字传递为空");
-//        }
-//        Long currentId  = BaseContext.getCurrentId();
-//
-//        //异步调用 保存搜索记录
-//        if(currentId != null && dto.getFromIndex() == 0){
-//            apUserSearchService.insert(dto.getSearchWords(), user.getId());
+        //1.检查参数
+        if (prefix == null || StringUtils.isBlank(prefix)) {
+            return R.error("关键字传递为空");
+        }
+        Long currentId = BaseContext.getCurrentId();
 
-        return R.success( dishList );
+            //异步调用 保存搜索记录至 MongoDB
+            if (currentId != null) {
+                userService.insert(prefix, currentId.intValue() );
+            }
+            //if(currentId != null && dto.getFromIndex() == 0){
+            //            userService.insert(dto.getSearchWords(), user.getId());
+
+        return R.success(dishList);
+
+    }
+
+    @PostMapping("/history")
+    public R<List<ApUserSearch>> findUserSearch() {
+        return userService.findUserSearch();
     }
 
     @Autowired
