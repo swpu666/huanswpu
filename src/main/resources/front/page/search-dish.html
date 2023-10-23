@@ -68,11 +68,23 @@
             color: #191919;
             font-family: "Core Sans D Font";
         }
+        .businessNames{
+            float: left;
+            user-select: none;
+            width: 100%;
+            font-size: 13px;
+            padding-top: 28rem;
+            text-overflow: ellipsis;
+            line-height: 1.0625rem;
+            color: #666;
+            text-align: left;
+        }
         .deliveryFee{
             float: left;
             user-select: none;
-            font-size: 0.75rem;
+            font-size: 13px;
             padding-top: 7px;
+            text-overflow: ellipsis;
             line-height: 1.0625rem;
             color: #666;
         }
@@ -85,7 +97,7 @@
             <el-input placeholder="搜索菜品" v-model="searchText">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input></el-header>
-        <el-main>
+        <!-- <el-main>
             <el-card class="box-card" v-for="item in dishList" :key="item.id">
                 <el-image :src="imgPathConvert(item.image)" @click="toShopPage">
                     <div slot="error" class="image-slot">
@@ -95,11 +107,26 @@
                 <div @click="toShopPage">
                     <div class="divName">{{item.name}}</div>
                     <div class="divDesc">{{item.description}}</div>
-                    <div class="divDesc">{{'月销' + (item.saleNum ? item.saleNum : 0)  }}</div>
+                    <div class="divDesc">{{'月销' + (item.sort? item.sort : 0)  }}</div>
                     <div class="divBottom"><span>￥</span><span>{{item.price/100}}</span></div>
                     <p style="display: none">{{item.id}}</p>
                 </div>
-            </el-card>
+            </el-card> -->
+
+            <el-card  class="box-card" v-for="item in dishList" :key="item.id" @click="searchEmployee(item.id)" >
+                <el-image :src="imgPathConvert(item.image)" style="width: 40%;height: 90%;display: inline-block;" alt="">
+                    <div slot="error" class="image-slot">
+                        <img src="../images/noImg.png"/>
+                    </div>
+                </el-image>
+                <div style="display: inline-block; width: 58%;height: 90%;text-align: center;" @click="searchEmployee(item.id)">
+                  <span class="businessName">{{item.name}}</span>
+                  <span class="businessNames" style="float: left;">{{item.description}}</span>
+                  <span class="businessNames">{{'月销' + (item.sort? item.sort : 0)  }}</span>
+                  <span class="businessNames">￥{{item.price/100}}</span>
+                  <span class="businessNames">编号{{item.id}}</span>
+                </div>
+                </el-card>
         </el-main>
     </el-container>
 </div>
@@ -153,39 +180,34 @@
         },
 
         methods: {
+            async searchEmployee(id){
+              const res = await  getShopId(id);
+              console.log(res)
+              console.log(id)
+              if(res.code ==1){
+                window.requestAnimationFrame(()=>{
+                 window.location.href= '/front/page/shop-details.html?id=' + res.data.id;
+                })
+              }
+            },
             toUserPage() {
                 window.requestAnimationFrame(() => {
                     window.location.href = '/front/page/user.html'
                 })
             },
-            async toShopPage(event) {
-                var target = event.target;
-                if (target.tagName !== 'div') {
-                    target = target.closest('div');
-                }
-                const p = target.querySelector('p');
-                const dishId = p.innerHTML;
-                const res = await getShopId(dishId);
-                if (res.code === 1) {
-                    const shopId = res.data.id; // 商家id位于响应的data属性中
-                    console.log('商家id:', shopId);
-                } else {
-                    console.error('获取商家id失败:', res.msg);
-                }
-                window.requestAnimationFrame(() => {
-                    window.location.href = '/front/page/shop-details.html?id=' + shopId;
-                })
-            },
             async search() {
                 this.dishList = [];
                 const res = await searchDish(this.searchText);
+                console.log("从服务器收到的响应：", this.searchText);
                 console.log("从服务器收到的响应：", res);
-                if(res.code === 1) {
-                    this.dishList = res.data;
+                if(res.data.code === 1) {
+                    this.dishList = res.data.data;
                 }
-                console.log(this.dishList)
             },
             async initData() {
+                const url = new URL(window.location.href)
+                this.searchText=url.searchParams.get('text')
+                this.search()
                 const res = await searchDish(this.searchText);
                 if (res.code === 1) {
                     this.dishList = res.data
@@ -193,6 +215,7 @@
                     this.$notify({type: 'warning', message: res.msg});
                 }
             },
+        
             //网络图片路径转换
             imgPathConvert(path) {
                 return imgPath(path)

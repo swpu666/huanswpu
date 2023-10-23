@@ -201,11 +201,9 @@ public class DishController {
     //根据条件查询对应的菜品数据
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish){
-
         List<DishDto> dishDtoList =null;
         //动态构造key
         String key="dish_"+dish.getCategoryId()+"_"+dish.getStatus();//
-
         //先从redis中获取缓存数据,按照菜单分类缓存
         dishDtoList= (List<DishDto>) redisTemplate.opsForValue().get(key);
 
@@ -239,10 +237,15 @@ public class DishController {
 
             //当前菜品的id
             Long dishId = item.getId();
+            log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
             LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
             lambdaQueryWrapper.eq(DishFlavor::getDishId,dishId);
             //SQL:select * from dish_flavor where dish_id = ?
+            log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
             List<DishFlavor> dishFlavorList = dishFlavorService.list(lambdaQueryWrapper);
+            log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            log.info(String.valueOf(dishFlavorList));
             dishDto.setFlavors(dishFlavorList);
             return dishDto;
         }).collect(Collectors.toList());
@@ -363,7 +366,7 @@ public class DishController {
         queryWrapper.eq(DishEmployee::getDishId,Long.getLong(dishId));
 //        queryWrapper.eq(DishEmployee::getStatus,1);
         DishEmployee de = dishEmployeeService.getOne(queryWrapper);
-
+        log.info(dishId);
         Employee e = employeeService.getById(de.getId());
         System.out.println("通过菜品"+dishId+"得到商家id"+e);
 

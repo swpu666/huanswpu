@@ -8,6 +8,8 @@
     <link rel="icon" href="../../backend/favicon.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="../js/base.js"></script>
+     <!--引入vant样式-->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
     <!--element-ui的样式-->
     <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css" />
     <!-- 引入样式  -->
@@ -26,10 +28,15 @@
         employeeId= GetQueryString('id');
     </script>
 </head>
+<style>
+</style>
 <body>
     <div id="main" class="app">
         <div class="divHead">
             <img src="../images/user.png" @click="toUserPage"/>
+        </div>
+        <div class="divHead" >
+            <img src="../images/消息.png" style=" position: absolute;left: 50rem;top: 41rem; width: 28rem;height: 28rem;" @click="toreviewpage"/>
         </div>
         <div class="divTitle">
             <div class="divStatic">
@@ -223,7 +230,6 @@
             </div>
         </van-dialog>
         </div>
-    </body>
     <script src="../../backend/plugins/vue/vue.js"></script>
     <!-- 引入组件库 -->
     <script src="../../backend/plugins/element-ui/index.js"></script>
@@ -235,7 +241,9 @@
     <script src="../js/common.js"></script>
     <script src="../api/main.js"></script>
     <script src="../api/employee.js"></script>
+</body>
     <script>
+
         new Vue({
             el:'#main',
             data(){
@@ -344,6 +352,11 @@
                         console.error('An error occurred:', error);
                         this.$notify({ type: 'error', message: 'An error occurred while fetching data.' });
                     }
+                },
+                toreviewpage(){
+                    window.requestAnimationFrame(()=>{
+                        window.location.href= '/front/reverse.html'
+                    })
                 },
                 //分类点击
                 categoryClick(index,id,type){
@@ -554,6 +567,7 @@
                         show:true,
                         image:item.image
                     }
+                    
                 },
                 flavorClick(flavor,item){
                     flavor.dishFlavor = item
@@ -564,14 +578,17 @@
                 //选择规格加入购物车
                 dialogFlavorAddCart(){
                     const dialogFlavor = this.dialogFlavor
+                    console.log(dialogFlavor)
                     let flag = true
                     let dishFlavor = []
                     dialogFlavor.flavors.forEach(item=>{
+                        console.log(item.dishFlavor)
+                        console.assert(item)
                         if(item.dishFlavor){
                             dishFlavor.push(item.dishFlavor)
                         }else{
                             flag = false
-                            Notify({ type: 'warning', message: '请选择'+ item.name });
+                            this.$notify({ type: 'warning', message: '请选择规格'});
                         }
                     })
                     if(flag){

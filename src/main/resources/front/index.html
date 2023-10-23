@@ -84,14 +84,18 @@
 <div id="main">
 <el-container class="el-container ">
   <el-header class="el-header">欢迎点餐 <br>
-    <div @click="toSearchPage">
-      <el-input placeholder="搜索菜品">
+    <div >
+      <el-input  v-model="input" placeholder="搜索菜品" @focus="changeHistory" @blur="changeHistory1">
         <el-button slot="append" icon="el-icon-search" @click="toSearchPage"></el-button>
       </el-input>
-    </div>
-    </el-header>
+      <ul style="position: fixed;font-size: 16px;background-color: white;color: #191919;width: 348px;display: none;" class="history">
+        <li style="height: 30px;border-bottom: 1px solid; border-color: #191919;line-height: 30px;"  v-for="(item,index) of dishHistory" v-if="item.keyword" >{{item.keyword}}
+          <i style="float: right;margin-top: 6px;margin-right: 5px;"  class="el-icon-close" @click="deleteHistory(event)"></i></li>
+      </ul>
+    </div >
+    </el-header><i class="el-icon-delete"></i>
   <el-main class="el-main">
-    <el-card class="box-card" v-for="(item,index) of employeeList">
+    <el-card class="box-card" v-for="(item,index) of employeeList" :key="index">
       <img :src="imgPathConvert(item.avatar)" style="width: 40%;height: 90%;display: inline-block;" alt="">
       <div @click="toShopPage" style="display: inline-block; width: 58%;height: 90%;text-align: center;">
         <span class="businessName">{{item.name}}</span>
@@ -137,6 +141,8 @@
         categoryId:undefined,
         dishList:[],
         cartData:[],
+        dishHistory:[],
+        input: '',
         employeeList:[],
         dialogFlavor:{
           name:'',
@@ -162,10 +168,23 @@
     },
 
     methods: {
+      changeHistory(){
+        let history = document.querySelector(".history");
+        history.style.display = "block"
+      },
+
+      changeHistory1(){
+        let history = document.querySelector(".history");
+        history.style.display = "none"
+      },
       toUserPage(){
         window.requestAnimationFrame(()=>{
           window.location.href= '/front/page/user.html'
         })
+      },
+      deleteHistory(event){
+        let history = event.target;
+        history.style.display = "none"
       },
       toShopPage(event){
         var target = event.target;
@@ -180,7 +199,7 @@
       },
       toSearchPage(){
         window.requestAnimationFrame(()=>{
-          window.location.href= '/front/page/search-dish.html'
+          window.location.href= '/front/page/search-dish.html?text='+this.input
         })
       },
       async initData() {
@@ -190,7 +209,13 @@
         } else{
           this.$notify({ type:'warning', message:res.msg});
         }
-      },
+        const res1 = await  getHistorySearch();
+        console.log(res1);
+        if(res.data.code==1){
+          this.dishHistory = res1.data.data;
+        }     
+    
+       },
       //网络图片路径转换
       imgPathConvert(path){
         return imgPath(path)

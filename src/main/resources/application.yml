@@ -72,5 +72,4 @@ mybatis-plus:
       id-type: ASSIGN_ID
 reggie:
   path: /usr/img/    #上传文件到云服务器的位置
-#  path: D:\img\
-  #上传文件到本地的位置
+#  path: D:\img\    #上传文件到本地的位置
