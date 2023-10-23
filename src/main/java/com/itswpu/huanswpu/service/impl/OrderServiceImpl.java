@@ -108,7 +108,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         orders.setStatus(2);//派送状态
         orders.setAmount(new BigDecimal(amount.get()));//总金额
         orders.setUserId(userId);
-        orders.setUserId(null);//刚下单，无人接单
+        orders.setDeliveryId(null);//刚下单，无人接单
         orders.setNumber(String.valueOf(orderId));
         orders.setUserName(user.getName());
         orders.setConsignee(addressBook.getConsignee());//收货人

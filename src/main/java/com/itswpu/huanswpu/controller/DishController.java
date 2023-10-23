@@ -363,12 +363,18 @@ public class DishController {
         }
 
         LambdaQueryWrapper<DishEmployee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DishEmployee::getDishId,Long.getLong(dishId));
+        queryWrapper.eq(DishEmployee::getDishId, dishId);
 //        queryWrapper.eq(DishEmployee::getStatus,1);
         DishEmployee de = dishEmployeeService.getOne(queryWrapper);
+
+
+        if (de == null) {
+            return R.error("未找到与菜品ID " + dishId + " 对应的商家信息");
+        }
+
         log.info(dishId);
-        Employee e = employeeService.getById(de.getId());
-        System.out.println("通过菜品"+dishId+"得到商家id"+e);
+        Employee e = employeeService.getById(de.getEmployeeId());
+        System.out.println("通过菜品"+dishId+"得到商家id"+e+"de关联类"+de.getEmployeeId());
 
         return R.success(e);
     }
