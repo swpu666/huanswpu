@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <title>环西柚美食用户端</title>
+    <link rel="icon" href="images/swpu.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../backend/plugins/element-ui/index.css" />
+    <!--引入vant样式-->
+    <link rel="stylesheet" href="styles/vant.min.css"/>
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="styles/index.css" />
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+<style>
+      .el-header {
+    background-color: #177cb0;
+    color: white;
+    text-align: center;
+    height: 10%;
+    text-align: center;
+    display: block;
+    color: #333;
+  }
+  .el-main {
+    color: #333;
+    height: 78%;
+    display: block;
+  }
+  .el-footer{
+    color: #333;
+    height: 12%!important;
+    display: block;
+    border-top:gray solid 1px;
+  }
+ .el-container {
+    width: 100%;
+    height: 100%;
+  }
+  .text {
+    font-size: 14px;
+  }
+
+  .item {
+    padding: 8px 0;
+  }
+
+  .box-card {
+    width:100%;
+    height: 20%;
+    margin-bottom: 20px;
+  }
+  .el-card__body {
+    padding: 5px!important;
+    height: 100%;
+    margin: 0 auto;
+  }
+</style>
+<body>
+
+    <div id="main">
+        <el-container class="el-container ">
+          <el-header class="el-header">
+               评论
+            </el-header>
+          <el-main class="el-main">
+            <el-card class="box-card" >
+                <div class="text item" style="line-height: 40px">
+                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" style="display: inline-block;vertical-align:-10px;"></el-avatar>
+                    <p style="display: inline-block;">helloworld</p>
+                </div>
+                <div><p>xxxxxxxxxxxxxxxx</p></div>
+                <div style="float: right;display: inline-block;">
+                  <span style="float: right;font-size: 12px;margin-top: 10px;">11</span>
+                    <img src="./images/点赞.png" style="height: 25px; width: 25px;float: right;display: inline-block;" alt="">
+                    <p>time</p></div>
+            </el-card>
+            <!-- <el-card class="box-card" v-for="(itme,index) for reverseList">
+                <div class="text item" style="line-height: 40px">
+                    <el-avatar :src="imgPathConvert(item.picture)" style="display: inline-block;vertical-align:-10px;"></el-avatar>
+                    <p style="display: inline-block;">{{item.user_id}}</p>
+                </div>
+                <div><p>{{item.content}}</p></div>
+                <div style="float: right;display: inline-block;">
+                    <img src="./images/点赞.png" style="height: 25px; width: 25px;float: right;display: inline-block;" alt="">
+                    < <span style="float: right;font-size: 12px;margin-top: 10px;">{{item.star}}</span>
+                    <p>{{item.create_time}}</p></div>
+            </el-card> -->
+          </el-main>
+          <el-footer class="el-footer">
+            
+            </el-footer>
+        </el-container>
+        </div>
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="js/vant.min.js"></script>
+<!-- 引入axios -->
+<script src="../backend/plugins/axios/axios.min.js"></script>
+<script src="js/request.js"></script>
+<script src="js/common.js"></script>
+<script src="api/main.js"></script>
+<script src="api/employee.js"></script>
+<script>
+    new Vue({
+        el: '#main',
+        data() {
+          return {
+            reverseList:[]
+          }
+        },
+        mounted() {
+          this.initData
+        },
+        methods: {
+          initData(){
+
+          }
+        },
+    })
+</script>
+</body>
+</html>

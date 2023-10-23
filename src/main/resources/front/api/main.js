@@ -99,3 +99,10 @@ function getShopId(dishId) {
     })
 }
 
+function getHistorySearch() {
+    return axios({
+        'method': 'post',
+        'url': '/dish/history',
+    })
+}
+
