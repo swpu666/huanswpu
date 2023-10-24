@@ -39,6 +39,7 @@ public class LoginCheckFilter implements Filter{
                 "/user/login",  //移动端登录
                 "/delivery/**",
                 "/delivery/sendMsg", //移动端发送短信
+                "/dish/history/**",
                 //下面这四个是 Swagger生成的接口文档 放行
                 "/doc.html",
                 "/webjars/**",

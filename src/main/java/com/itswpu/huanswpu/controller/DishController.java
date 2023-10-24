@@ -318,7 +318,12 @@ public class DishController {
         for (DishEmployee de : dishEmployeeList) {
             ids.add(de.getDishId());
         }
+        Long currentId = BaseContext.getCurrentId();
+        
         if (!CollectionUtils.isNotEmpty(ids)) {
+            if (currentId != null) {
+                userService.insert(prefix, currentId );
+            }
             return R.error("未搜到相关菜品");
         }
         //条件构造器
@@ -334,11 +339,11 @@ public class DishController {
         if (prefix == null || StringUtils.isBlank(prefix)) {
             return R.error("关键字传递为空");
         }
-        Long currentId = BaseContext.getCurrentId();
+
 
             //异步调用 保存搜索记录至 MongoDB
             if (currentId != null) {
-                userService.insert(prefix, currentId.intValue() );
+                userService.insert(prefix, currentId );
             }
             //if(currentId != null && dto.getFromIndex() == 0){
             //            userService.insert(dto.getSearchWords(), user.getId());
@@ -349,6 +354,7 @@ public class DishController {
 
     @PostMapping("/history")
     public R<List<ApUserSearch>> findUserSearch() {
+        log.info("*/*/*/*/* 调用history方法");
         return userService.findUserSearch();
     }
 

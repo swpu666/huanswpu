@@ -29,20 +29,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
      * @param userId
      */
     @Override
-    @Async
-    public void insert(String keyword, Integer userId) {
+//    @Async
+    public void insert(String keyword, Long userId) {
         //1.查询当前用户的搜索关键词
-        Query query = Query.query(Criteria.where("userId").is(userId).and("keyword").is(keyword));
+        Query query = Query.query(Criteria.where("userId").
+                is(userId).and("keyword").is(keyword));
         ApUserSearch apUserSearch = mongoTemplate.findOne(query, ApUserSearch.class);
 
-        //2.存在 更新创建时间
+        //2.存在相同关键词 更新创建时间
         if(apUserSearch != null){
             apUserSearch.setCreatedTime(new Date());
             mongoTemplate.save(apUserSearch);
             return;
         }
 
-        //3.不存在，判断当前历史记录总数量是否超过10
+        //3.不存在，判断当前 历史记录总数量是否超过10
         apUserSearch = new ApUserSearch();
         apUserSearch.setUserId(userId);
         apUserSearch.setKeyword(keyword);
@@ -51,12 +52,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         Query query1 = Query.query(Criteria.where("userId").is(userId));
         query1.with(Sort.by(Sort.Direction.DESC,"createdTime"));
         List<ApUserSearch> apUserSearchList = mongoTemplate.find(query1, ApUserSearch.class);
+//        log.warn("mongoDB.find到的"+apUserSearchList.toString() );
 
         if(apUserSearchList == null || apUserSearchList.size() < 10){
             mongoTemplate.save(apUserSearch);
+//            log.warn("mongoDB.save后的"+apUserSearch.toString() );
         }else {
             ApUserSearch lastUserSearch = apUserSearchList.get(apUserSearchList.size() - 1);
-            mongoTemplate.findAndReplace(Query.query(Criteria.where("id").is(lastUserSearch.getId())),apUserSearch);
+            mongoTemplate.findAndReplace(Query.query(Criteria.where("id").
+                    is( lastUserSearch.getId() ) ),apUserSearch);
+//            log.warn("mongoDB.findAndReplace替换最后一个 后的"+apUserSearch.toString() );
         }
     }
 
@@ -68,6 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     @Override
     public R<List<ApUserSearch>> findUserSearch() {
         //获取当前用户
+//        Long user = 2126557185L;
         Long user = BaseContext.getCurrentId();
         if(user == null){
             return R.error("未登录");
@@ -77,6 +83,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         List<ApUserSearch> apUserSearches = mongoTemplate.find
                 (Query.query(Criteria.where("userId").is(user)).with
                         (Sort.by(Sort.Direction.DESC, "createdTime")), ApUserSearch.class);
+
+        log.warn("*/*/*/*/* 调用findUserSearch方法");
+        log.warn("*/*/*/****"+ apUserSearches+"----");
         return R.success(apUserSearches);
     }
 }
