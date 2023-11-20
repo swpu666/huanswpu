@@ -164,8 +164,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
         List<Orders> list = this.list(queryWrapper);
 
+//        for (Orders orders : list) {
+//            orders.setStatus(3);//已接单
+//            orders.setDeliveryId(deliveryId);
+//            this.updateById(orders);
+//        }
+
         for (Orders orders : list) {
-            orders.setStatus(3);
+            orders.setStatus(5);//已完成
             orders.setDeliveryId(deliveryId);
             this.updateById(orders);
         }
