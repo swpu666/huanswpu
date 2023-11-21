@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
@@ -103,5 +104,18 @@ public class UserController {
         }
         return R.error("登录失败");
     }
+
+    /**
+     * 移动端用户退出
+     * @param request
+     * @return
+     */
+    @PostMapping("/loginout")
+    public R<String> logout(HttpServletRequest request){
+        //清理Session中保存的当前登录商家的id
+        request.getSession().removeAttribute("user");
+        return R.success("用户退出成功");
+    }
+
 
 }

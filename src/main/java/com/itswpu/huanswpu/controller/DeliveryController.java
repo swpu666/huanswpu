@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -98,6 +99,18 @@ public class DeliveryController {
             return R.success(delivery);
         }
         return R.error("登录失败");
+    }
+
+    /**
+     * 移动端骑手退出登录
+     * @param request
+     * @return
+     */
+    @PostMapping("/loginout")
+    public R<String> logout(HttpServletRequest request){
+        //清理Session中保存的当前登录商家的id
+        request.getSession().removeAttribute("delivery");
+        return R.success("用户退出成功");
     }
 
 }
