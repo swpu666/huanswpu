@@ -2,16 +2,22 @@ package com.itswpu.huanswpu.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
 import com.itswpu.huanswpu.dto.DishDto;
 import com.itswpu.huanswpu.entity.*;
+import com.itswpu.huanswpu.mapper.OrdersEmployeeMapper;
 import com.itswpu.huanswpu.service.CommentService;
+import com.itswpu.huanswpu.service.EmployeeService;
+import com.itswpu.huanswpu.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,6 +35,8 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private OrdersEmployeeMapper oem;
     /**
      * 新增评论
      * @param comment
@@ -40,7 +48,20 @@ public class CommentController {
         Long userId = BaseContext.getCurrentId();
 
         comment.setId(userId);
-        log.info("新增comment:{}",comment);
+        Long orderId = comment.getEmployeeId();//前端实际传递的是订单id
+        if(orderId == null) {
+            return R.error("订单"+orderId+"不存在");
+        }
+        LambdaQueryWrapper<OrdersEmployee> queryWrapper = new LambdaQueryWrapper();
+        //添加过滤条件
+        queryWrapper.eq(orderId!=null,OrdersEmployee::getOrderId,orderId);
+        OrdersEmployee ordersEmployee = oem.selectOne(queryWrapper);
+        if(ordersEmployee == null) {
+            return R.error("订单"+orderId+"未关联商家");
+        }
+
+        comment.setEmployeeId(ordersEmployee.getEmployeeId());
+        log.info("新增comment为:{}",comment);
         if (comment == null){
             return R.error("接收评论为空:comment"+comment);
         }
