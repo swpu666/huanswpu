@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 订单
@@ -139,26 +140,62 @@ public class OrderController {
      * @param ://localhost:8080/order/userPage?page=1&pageSize=5
      * @return
      */
+//    @GetMapping("/userPage")
+//    public R<Page> userPage(int page,int pageSize){
+//
+////        log.info("page数据 {}，{}",page,pageSize);
+//        //设置用户id，指定当前是哪个用户的订单数据
+//        Long currentId = BaseContext.getCurrentId();
+//        //构造分页构造器对象
+//        Page<OrderDetailDto> pageInfo = new Page<>(page,pageSize);
+//
+//        //条件构造器
+//        LambdaQueryWrapper<OrderDetailDto> queryWrapper = new LambdaQueryWrapper<>();
+//        //添加排序条件
+//        queryWrapper.orderByDesc(OrderDetailDto::getOrderTime);
+//        //添加过滤条件
+//        queryWrapper.eq(OrderDetailDto::getUserId,currentId);
+//
+//        //执行分页查询
+//        orderService.page(pageInfo,queryWrapper);
+//
+//        return R.success(pageInfo);
+//    }
+
+
     @GetMapping("/userPage")
-    public R<Page> userPage(int page,int pageSize){
-
-//        log.info("page数据 {}，{}",page,pageSize);
-        //设置用户id，指定当前是哪个用户的订单数据
-        Long currentId = BaseContext.getCurrentId();
-        //构造分页构造器对象
+    public R<Page> page(int page, int pageSize){
+        //分页构造器对象
         Page<Orders> pageInfo = new Page<>(page,pageSize);
-
-        //条件构造器
+        Page<OrderDto> pageDto = new Page<>(page,pageSize);
+        //构造条件查询对象
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-        //添加排序条件
+        queryWrapper.eq(Orders::getUserId, BaseContext.getCurrentId());
+        //这里是直接把当前用户分页的全部结果查询出来，要添加用户id作为查询条件，否则会出现用户可以查询到其他用户的订单情况
+        //添加排序条件，根据更新时间降序排列
         queryWrapper.orderByDesc(Orders::getOrderTime);
-        //添加过滤条件
-        queryWrapper.eq(Orders::getUserId,currentId);
-
-        //执行分页查询
+        //这里是把所有的订单分页查询出来
         orderService.page(pageInfo,queryWrapper);
 
-        return R.success(pageInfo);
+        //对OrderDto进行属性赋值
+        List<Orders> records = pageInfo.getRecords();
+        List<OrderDto> orderDtoList = records.stream().map((item) ->{//item其实就是分页查询出来的每个订单对象
+            OrderDto orderDto = new OrderDto();
+            //此时的orderDto对象里面orderDetails属性还是空 下面准备为它赋值
+            Long orderId = item.getId();//获取订单id
+            //调用根据订单id条件查询订单明细数据的方法，把查询出来订单明细数据存入orderDetailList
+            List<OrderDetail> orderDetailList = orderService.getOrderDetailListByOrderId(orderId);
+
+            BeanUtils.copyProperties(item,orderDto);//把订单对象的数据复制到orderDto中
+            //对orderDto进行OrderDetails属性的赋值
+            orderDto.setOrderDetails(orderDetailList);
+            return orderDto;
+        }).collect(Collectors.toList());
+
+        //将订单分页查询的订单数据以外的内容复制到pageDto中，不清楚可以对着图看
+        BeanUtils.copyProperties(pageInfo,pageDto,"records");
+        pageDto.setRecords(orderDtoList);
+        return R.success(pageDto);
     }
 
     @PutMapping("/cancel")
