@@ -17,6 +17,31 @@
         <!--本页面内容的样式-->
         <link rel="stylesheet" href="../styles/order.css" />
     </head>
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 58px;
+            height: 58px;
+            line-height: 58px;
+            text-align: center;
+        }
+        .avatar {
+            width: 58px;
+            height: 58px;
+            display: block;
+        }
+    </style>
     <body>
         <div id="order" class="app">
             <div class="divHead">
@@ -44,7 +69,8 @@
                             </div>
                         </div>
                         <div class="result">
-                            <span>共{{order.sumNum}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
+                            <span style="float: left;margin-right: 50px" @click="comment(order.id,order.orderTime)">点击评论</span>
+                            <span>共{{}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
                         </div>
                         <div class="btn" v-if="order.status === 4">
                             <div class="btnAgain" @click="addOrderAgain(order)">再来一单</div>
@@ -58,10 +84,54 @@
                     <div>暂无订单</div>
                 </div>
             </div>
+            <el-drawer
+                    :visible.sync="drawer"
+                    :direction="direction"
+                    style="height: 1100px"
+                    >
+                <span style="font-size: 15px;text-align: center">您对本次用餐满意吗？</span>
+                <el-rate
+                        style="margin-top: 10px"
+                        v-model="value"
+                        show-text>
+                </el-rate>
+                <span  style="font-size: 15px;text-align: center; margin-top: 10px">评价</span>
+                <el-input
+                        style="margin-top: 10px"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="textarea"
+                        maxlength="30"
+                        show-word-limit
+                >
+                </el-input>
+                <el-upload
+                        style="margin-top: 10px"
+                        class="avatar-uploader"
+                        action="/common/upload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :on-change="onChange"
+                        ref="upload"
+                >
+                    <img
+
+                            v-if="imageUrl"
+                            :src="imageUrl"
+                            class="avatar"
+                    ></img>
+                    <i
+                            v-else
+                            class="el-icon-plus avatar-uploader-icon"
+                    ></i>
+                </el-upload>
+                <el-button @click="submitComment" style="margin-top: 10px" type="primary">发布评价</el-button>
+            </el-drawer>
         </div>
         <!-- 开发环境版本，包含了有帮助的命令行警告 -->
         <script src="../../backend/plugins/vue/vue.js"></script>
         <!-- 引入组件库 -->
+
         <script src="../../backend/plugins/element-ui/index.js"></script>
         <!-- 引入vant组件 -->
         <script src="../js/vant.min.js"></script>
@@ -69,6 +139,7 @@
         <script src="../../backend/plugins/axios/axios.min.js"></script>
         <script src="../js/request.js"></script>
         <script src="../api/order.js"></script>
+        <script src="../api/main.js"></script>
         <script>
         new Vue({
             el:"#order",
@@ -80,7 +151,15 @@
                     },
                     orderList:[],
                     loading:false,
-                    finished:false
+                    finished:false,
+                    drawer: false,
+                    direction: 'ttb',
+                    value: null,
+                    textarea: '',
+                    imageUrl : '',
+                    imageData:'',
+                    Id:'',
+                    orderTime:''
                 }
             },
             computed:{},
@@ -89,6 +168,21 @@
             },
             mounted(){},
             methods:{
+                comment(id,orderTime){
+                   this.drawer = true
+                    this.Id=id
+                    this.orderTime=orderTime
+                },
+               async submitComment(){
+                console.log(this.textarea,this.Id,this.imageData,this.orderTime,this. value)
+                 const res = await postComment({content:this.textarea,userId:'' ,employeeId:this.Id,picture:this.imageData,createTime:Date.parse(new Date()),star:this. value});
+                 if(res.code == 1 ){
+                    this.$notify({ type:'success', message:"提交成功"});
+                 }
+                 else{
+                    this.$notify({ type:'warning', message:res.msg});
+                 }
+                },
                 goBack(){
                     const url = document.referrer
                     //表示是从订单页面跳转过来的
@@ -100,9 +194,36 @@
                         history.go(-1)
                     }
                 },
+                handleAvatarSuccess (response, file, fileList) {
+                    // 拼接down接口预览
+                    if(response.code === 0 && response.msg === '未登录'){
+                        window.top.location.href = '/front/page/login.html'
+                    }else{
+                        this.imageUrl = `/common/download?name=${response.data}`
+                        this.imageData = response.data
+                    }
+                },
+                onChange (file) {
+                    if(file){
+                        const suffix = file.name.split('.')[1]
+                        const size = file.size / 1024 / 1024 < 2
+                        if(['png','jpeg','jpg'].indexOf(suffix) < 0){
+                            this.$message.error('上传图片只支持 png、jpeg、jpg 格式！')
+                            this.$refs.upload.clearFiles()
+                            return false
+                        }
+                        if(!size){
+                            this.$message.error('上传文件大小不能超过 2MB!')
+                            return false
+                        }
+                        return file
+                    }
+                },
                 initData(){
                     this.getList()
                 },
+
+
                 async getList(){
                     if(this.finished){
                         this.loading = false;
@@ -110,7 +231,7 @@
                     }
                     const res = await orderPagingApi(this.paging)
                     if(res.code === 1){
-                        this.orderList.push(...res.data.records)
+                        this.orderList = res.data.records
                         let records = res.data.records
                         if(records && Array.isArray(records)){
                             records.forEach(item=>{
@@ -140,6 +261,7 @@
                         this.$notify({ type:'warning', message:res.msg});
                     }
                 },
+
                 getStatus(status){
                     let str = ''
                     switch(status){

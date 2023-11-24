@@ -6,20 +6,32 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
     <title>环西柚美食用户端</title>
-    <link rel="icon" href="images/swpu.ico">
+    <link rel="icon" href="./images/swpu.ico">
     <!--不同屏幕尺寸根字体设置-->
-    <script src="js/base.js"></script>
+    <script src="./js/base.js"></script>
     <!--element-ui的样式-->
     <link rel="stylesheet" href="../backend/plugins/element-ui/index.css" />
     <!--引入vant样式-->
-    <link rel="stylesheet" href="styles/vant.min.css"/>
+    <link rel="stylesheet" href="./styles/vant.min.css"/>
     <!-- 引入样式  -->
-    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="./styles/index.css" />
     <!--本页面内容的样式-->
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <script>
+        //获取商家id
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null)
+                return (r[2]);
+            return null;
+        }
+        employeeId= GetQueryString('id');
+    </script>
 </head>
+
 <style>
-      .el-header {
+    .el-header {
     background-color: #177cb0;
     color: white;
     text-align: center;
@@ -53,7 +65,7 @@
 
   .box-card {
     width:100%;
-    height: 20%;
+    height: 35%;
     margin-bottom: 20px;
   }
   .el-card__body {
@@ -66,35 +78,40 @@
 
     <div id="main">
         <el-container class="el-container ">
-          <el-header class="el-header">
-               评论
+          <el-header class="el-header" style="text-align: center">
+              <img src="./images/返回.png" style="height: 20px;width: 15px;float: left;margin-top: 15px"  @click="goBack"></img>
+               <p style="font-size: 18px;text-align: center;margin-top: 10px;margin-top: 10px">评论</p>
             </el-header>
           <el-main class="el-main">
-            <el-card class="box-card" >
+            <!-- <el-card class="box-card" >
                 <div class="text item" style="line-height: 40px">
-                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" style="display: inline-block;vertical-align:-10px;"></el-avatar>
                     <p style="display: inline-block;">helloworld</p>
+                    <img src="./images/评分、星星-空.png" v-for="index of nums" style="height: 25px; width: 25px;float: right;">
+                    <img src="./images/评分、星星.png" v-for="index of 5-nums" style="height: 25px; width: 25px;float: right;">
                 </div>
-                <div><p>xxxxxxxxxxxxxxxx</p></div>
-                <div style="float: right;display: inline-block;">
-                  <span style="float: right;font-size: 12px;margin-top: 10px;">11</span>
-                    <img src="./images/点赞.png" style="height: 25px; width: 25px;float: right;display: inline-block;" alt="">
-                    <p>time</p></div>
-            </el-card>
-            <!-- <el-card class="box-card" v-for="(itme,index) for reverseList">
-                <div class="text item" style="line-height: 40px">
-                    <el-avatar :src="imgPathConvert(item.picture)" style="display: inline-block;vertical-align:-10px;"></el-avatar>
-                    <p style="display: inline-block;">{{item.user_id}}</p>
+                <div><p>xxxxxxxxxxxxxxxx</p>
+                    <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"   style="display: inline-block;vertical-align:-10px;width: 40px; height: 40px;margin: 5px;"></img>
+                   
                 </div>
-                <div><p>{{item.content}}</p></div>
-                <div style="float: right;display: inline-block;">
-                    <img src="./images/点赞.png" style="height: 25px; width: 25px;float: right;display: inline-block;" alt="">
-                    < <span style="float: right;font-size: 12px;margin-top: 10px;">{{item.star}}</span>
-                    <p>{{item.create_time}}</p></div>
+                <div style="float: right;display: inline-block;margin-top: 20px;">
+                    <p>2021-1-5</p></div>
             </el-card> -->
+            
+           <el-card class="box-card" v-for="(item,index) of reverseList" :key="index">
+               <div class="text item" style="line-height: 40px">
+                   <p style="display: inline-block;">{{item.id}}</p>
+                        <img src="./images/评分、星星.png" v-for="index of item.star" style="height: 25px; width: 25px;float: right;">
+                        <img v-for="index of 5-item.star" src="./images/评分、星星-空.png"  style="height: 25px; width: 25px;float: right;">
+               </div>
+             <div><p>{{item.content}}</p> 
+                  <img :src="imgPathConvert(item.picture)" style="display: inline-block;vertical-align:-10px;width: 40px; height: 40px;margin: 5px;"></img>
+                    </div>
+               <div style="float: right;display: inline-block;">
+                   <p>{{timestampToTime(item.createTime)}}</p></div>
+           </el-card>
           </el-main>
           <el-footer class="el-footer">
-            
+
             </el-footer>
         </el-container>
         </div>
@@ -104,28 +121,51 @@
 <!-- 引入组件库 -->
 <script src="../backend/plugins/element-ui/index.js"></script>
 <!-- 引入vant样式 -->
-<script src="js/vant.min.js"></script>
+<script src="./js/vant.min.js"></script>
 <!-- 引入axios -->
 <script src="../backend/plugins/axios/axios.min.js"></script>
-<script src="js/request.js"></script>
-<script src="js/common.js"></script>
-<script src="api/main.js"></script>
-<script src="api/employee.js"></script>
+<script src="./js/request.js"></script>
+<script src="./js/common.js"></script>
+<script src="./api/main.js"></script>
+<script src="./api/employee.js"></script>
 <script>
     new Vue({
         el: '#main',
         data() {
           return {
-            reverseList:[]
+            reverseList:[],
+            nums:2
           }
         },
         mounted() {
-          this.initData
+          this.initData()
         },
         methods: {
-          initData(){
-
-          }
+          timestampToTime(timestamp) {
+        var date = new Date(timestamp)
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1):date.getMonth()+1) + '-';
+        var D = (date.getDate()< 10 ? '0'+date.getDate():date.getDate())+ ' ';
+        var h = (date.getHours() < 10 ? '0'+date.getHours():date.getHours())+ ':';
+        var m = (date.getMinutes() < 10 ? '0'+date.getMinutes():date.getMinutes()) + ':';
+        var s = date.getSeconds() < 10 ? '0'+date.getSeconds():date.getSeconds();
+        return Y+M+D+h+m+s;
+    },
+            goBack(){
+                history.go(-1)
+            },
+          async initData() {
+              const res = await getComment(employeeId)
+              console.log(res)
+              if (res.data.code == 1) {
+                  this.reverseList = res.data.data
+              } else {
+                  this.$notify({type: 'warning', message: res.msg});
+              }
+          },
+          imgPathConvert(path){
+            return imgPath(path)
+      },
         },
     })
 </script>

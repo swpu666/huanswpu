@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -47,7 +49,8 @@ public class CommentController {
         //获得当前用户id
         Long userId = BaseContext.getCurrentId();
 
-        comment.setId(userId);
+        comment.setUserId(userId);
+        
         Long orderId = comment.getEmployeeId();//前端实际传递的是订单id
         if(orderId == null) {
             return R.error("订单"+orderId+"不存在");

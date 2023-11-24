@@ -106,3 +106,22 @@ function getHistorySearch() {
     })
 }
 
+function postComment(data) {
+    return axios({
+        'method': 'post',
+        'url': '/comment',      
+        data:data
+    })
+}
+
+function getComment(employeeId) {
+    return axios({
+        'method': 'get',
+        'url': '/comment/get',
+        params:{
+            employeeId:employeeId,
+        }
+
+    })
+}
+
