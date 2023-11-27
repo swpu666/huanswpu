@@ -70,7 +70,7 @@
                         </div>
                         <div class="result">
                             <span style="float: left;margin-right: 50px" @click="comment(order.id,order.orderTime)">点击评论</span>
-                            <span>共{{}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
+                            <span>共{{order.sumNum}}件商品,实付</span><span class="price">￥{{order.amount}}</span>
                         </div>
                         <div class="btn" v-if="order.status === 4">
                             <div class="btnAgain" @click="addOrderAgain(order)">再来一单</div>
@@ -159,12 +159,13 @@
                     imageUrl : '',
                     imageData:'',
                     Id:'',
-                    orderTime:''
+                    orderTime:'',
                 }
             },
             computed:{},
             created(){
                 this.initData()
+
             },
             mounted(){},
             methods:{
