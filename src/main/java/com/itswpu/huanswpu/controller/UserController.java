@@ -1,6 +1,7 @@
 package com.itswpu.huanswpu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.itswpu.huanswpu.common.BaseContext;
 import com.itswpu.huanswpu.common.R;
 import com.itswpu.huanswpu.entity.ApUserSearch;
 import com.itswpu.huanswpu.entity.User;
@@ -10,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+//import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.query.Criteria;
+//import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -97,6 +98,8 @@ public class UserController {
                 user.setStatus(1);
                 userService.save(user);
             }
+            BaseContext.setCurrentId(user.getId());
+            System.out.println("user.setCurrentId"+user.getId());
             session.setAttribute("user",user.getId());
             //如果用户登录成功，删除redis中缓存的验证码
             redisTemplate.delete(phone);

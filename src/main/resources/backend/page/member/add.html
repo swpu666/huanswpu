@@ -62,13 +62,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="身份证号:"
-          prop="idNumber"
+          label="密码:"
+          prop="password"
         >
           <el-input
-            v-model="ruleForm.idNumber"
-            placeholder="请输入身份证号"
-            maxlength="20"
+            v-model="ruleForm.password"
+            placeholder="请输入密码"
           />
         </el-form-item>
         <el-form-item
@@ -82,7 +81,7 @@
           />
         </el-form-item>
         <el-form-item
-        label="菜品图片:"
+        label="商家头像:"
         prop="region"
         class="uploadImg"
       >
@@ -152,7 +151,7 @@
               'name': '',
               'phone': '',
               'sex': '男',
-              'idNumber': '',
+              'password': '123456',
               'address': '',
               'avatar':'',
               username: ''
@@ -170,8 +169,8 @@
               ],
               //姓名
               name: [{required: true, 'validator': checkName, 'trigger': 'blur'}],
-              'phone': [{'required': true, 'validator': checkPhone, 'trigger': 'blur'}],
-              'idNumber': [{'required': true, 'validator': validID, 'trigger': 'blur'}],
+              'phone': [{'required': true,  'trigger': 'blur'}],
+              'password': [{'required': true,  'trigger': 'blur'}],
               'address': [{'required': true, 'validator': checkAddress, 'trigger': 'blur'}],
             }
           }
@@ -198,7 +197,7 @@
               }
             })
           },
-          
+
           // 上传图片
           onChange (file) {
             if(file){
@@ -236,8 +235,8 @@
                     sex: this.ruleForm.sex === '女' ? '0' : '1'
                   }
                   if(!this.imageUrl){
-                  this.$message.error('请上传菜品图片')
-                  return 
+                  this.$message.error('请上传商家头像')
+                  return
                 }
                   addEmployee(params).then(res => {//封装到member.JS文件
                     if (res.code === 1) {
@@ -252,7 +251,7 @@
                           // 'password': '',
                           // 'rePassword': '',/
                           'sex': '男',
-                          'idNumber': '',
+                          'password': '',
                           'address': ''
                         }
                       }
@@ -297,7 +296,7 @@
            this.ruleForm.avatar=params
           },
 
-          
+
         },
       })
     </script>

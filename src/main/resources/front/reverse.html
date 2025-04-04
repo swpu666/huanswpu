@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-    <title>环西柚美食用户端</title>
+    <title>洛理美食用户端</title>
     <link rel="icon" href="./images/swpu.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="./js/base.js"></script>
@@ -91,19 +91,19 @@
                 </div>
                 <div><p>xxxxxxxxxxxxxxxx</p>
                     <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"   style="display: inline-block;vertical-align:-10px;width: 40px; height: 40px;margin: 5px;"></img>
-                   
+
                 </div>
                 <div style="float: right;display: inline-block;margin-top: 20px;">
                     <p>2021-1-5</p></div>
             </el-card> -->
-            
+
            <el-card class="box-card" v-for="(item,index) of reverseList" :key="index">
                <div class="text item" style="line-height: 40px">
                    <p style="display: inline-block;">{{item.id}}</p>
                         <img src="./images/评分、星星.png" v-for="index of item.star" style="height: 25px; width: 25px;float: right;">
                         <img v-for="index of 5-item.star" src="./images/评分、星星-空.png"  style="height: 25px; width: 25px;float: right;">
                </div>
-             <div><p>{{item.content}}</p> 
+             <div><p>{{item.content}}</p>
                   <img :src="imgPathConvert(item.picture)" style="display: inline-block;vertical-align:-10px;width: 40px; height: 40px;margin: 5px;"></img>
                     </div>
                <div style="float: right;display: inline-block;">

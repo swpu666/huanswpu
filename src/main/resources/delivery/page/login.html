@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-        <title>环西柚美食骑手端</title>
+        <title>洛理美食骑手端</title>
         <link rel="icon" href="../../backend/favicon.ico">
         <!--不同屏幕尺寸根字体设置-->
         <script src="../js/base.js"></script>
@@ -78,7 +78,7 @@
                             sessionStorage.setItem("userPhone",this.form.phone)
                             window.requestAnimationFrame(()=>{
                                 window.location.href= '../index.html'
-                            })                           
+                            })
                         }else{
                             this.$notify({ type:'warning', message:res.msg});
                         }

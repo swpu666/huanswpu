@@ -13,12 +13,12 @@ public interface UserService extends IService<User> {
      * @param keyword
      * @param userId
      */
-    public void insert(String keyword,Long userId);
+//    public void insert(String keyword,Long userId);
 
     /**
      查询搜索历史
      @return
      */
-    R<List<ApUserSearch>> findUserSearch();
+//    R<List<ApUserSearch>> findUserSearch();
 
 }

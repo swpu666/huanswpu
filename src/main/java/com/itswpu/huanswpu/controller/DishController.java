@@ -303,60 +303,60 @@ public class DishController {
         return R.success("删除成功");
     }
 
-    @Autowired
-    private UserService userService;
+//    @Autowired
+//    private UserService userService;
 
-    @GetMapping("/search")
-    public R< List <Dish> > search(@RequestParam("key") String prefix) {
-        LambdaQueryWrapper<DishEmployee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(DishEmployee::getName, prefix);
-//        queryWrapper.eq(DishEmployee::getStatus,1);
-        List<DishEmployee> dishEmployeeList = dishEmployeeService.list(queryWrapper);
+//    @GetMapping("/search")
+//    public R< List <Dish> > search(@RequestParam("key") String prefix) {
+//        LambdaQueryWrapper<DishEmployee> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.like(DishEmployee::getName, prefix);
+////        queryWrapper.eq(DishEmployee::getStatus,1);
+//        List<DishEmployee> dishEmployeeList = dishEmployeeService.list(queryWrapper);
+//
+//        List<Long> ids = new ArrayList<>();
+//
+//        for (DishEmployee de : dishEmployeeList) {
+//            ids.add(de.getDishId());
+//        }
+//        Long currentId = BaseContext.getCurrentId();
+//
+//        if (!CollectionUtils.isNotEmpty(ids)) {
+//            if (currentId != null) {
+//                userService.insert(prefix, currentId );
+//            }
+//            return R.error("未搜到相关菜品");
+//        }
+//        //条件构造器
+//        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+//        //添加过滤条件
+//        qw.in(Dish::getId, ids);
+//        //添加排序条件
+//        qw.orderByDesc(Dish::getUpdateTime);
+//
+//        List<Dish> dishList = dishService.list(qw);
+//
+//        //1.检查参数
+//        if (prefix == null || StringUtils.isBlank(prefix)) {
+//            return R.error("关键字传递为空");
+//        }
+//
+//
+//            //异步调用 保存搜索记录至 MongoDB
+//            if (currentId != null) {
+//                userService.insert(prefix, currentId );
+//            }
+//            //if(currentId != null && dto.getFromIndex() == 0){
+//            //            userService.insert(dto.getSearchWords(), user.getId());
+//
+//        return R.success(dishList);
+//
+//    }
 
-        List<Long> ids = new ArrayList<>();
-
-        for (DishEmployee de : dishEmployeeList) {
-            ids.add(de.getDishId());
-        }
-        Long currentId = BaseContext.getCurrentId();
-        
-        if (!CollectionUtils.isNotEmpty(ids)) {
-            if (currentId != null) {
-                userService.insert(prefix, currentId );
-            }
-            return R.error("未搜到相关菜品");
-        }
-        //条件构造器
-        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
-        //添加过滤条件
-        qw.in(Dish::getId, ids);
-        //添加排序条件
-        qw.orderByDesc(Dish::getUpdateTime);
-
-        List<Dish> dishList = dishService.list(qw);
-
-        //1.检查参数
-        if (prefix == null || StringUtils.isBlank(prefix)) {
-            return R.error("关键字传递为空");
-        }
-
-
-            //异步调用 保存搜索记录至 MongoDB
-            if (currentId != null) {
-                userService.insert(prefix, currentId );
-            }
-            //if(currentId != null && dto.getFromIndex() == 0){
-            //            userService.insert(dto.getSearchWords(), user.getId());
-
-        return R.success(dishList);
-
-    }
-
-    @PostMapping("/history")
-    public R<List<ApUserSearch>> findUserSearch() {
-        log.info("*/*/*/*/* 调用history方法");
-        return userService.findUserSearch();
-    }
+//    @PostMapping("/history")
+//    public R<List<ApUserSearch>> findUserSearch() {
+//        log.info("*/*/*/*/* 调用history方法");
+//        return userService.findUserSearch();
+//    }
 
     @Autowired
     public EmployeeService employeeService;

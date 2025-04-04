@@ -110,7 +110,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         orders.setUserId(userId);
         orders.setDeliveryId(null);//刚下单，无人接单
         orders.setNumber(String.valueOf(orderId));
-        orders.setUserName(user.getName());
+//        orders.setUserName(user.getName());
         orders.setConsignee(addressBook.getConsignee());//收货人
         orders.setPhone(addressBook.getPhone());
         orders.setAddress((addressBook.getProvinceName() == null ? "" : addressBook.getProvinceName())

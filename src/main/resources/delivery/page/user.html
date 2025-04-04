@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-    <title>环西柚美食管理端</title>
+    <title>洛理美食管理端</title>
     <link rel="icon" href="../../backend/favicon.ico">
     <!--element-ui的样式-->
     <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css" />
@@ -122,12 +122,12 @@
                 toAddressPage(){
                     window.requestAnimationFrame(()=>{
                         window.location.href = '/delivery/page/address.html'
-                    })  
+                    })
                 },
                 toOrderPage(){
                     window.requestAnimationFrame(()=>{
                         window.location.href = '/delivery/page/order.html'
-                    }) 
+                    })
                 },
                 toUserPage(){
                     window.requestAnimationFrame(()=>{
@@ -183,7 +183,7 @@
                     if(res.code === 1){
                         window.requestAnimationFrame(()=>{
                             window.location.href = '/delivery/index.html'
-                        }) 
+                        })
                     }else{
                         this.$notify({ type:'warning', message:res.msg});
                     }
@@ -193,10 +193,10 @@
                     if(res.code === 1){
                         window.requestAnimationFrame(()=>{
                             window.location.href = '/delivery/page/login.html'
-                        }) 
+                        })
                     }else{
                         this.$notify({ type:'warning', message:res.msg});
-                    }                
+                    }
                 }
             }
         })
